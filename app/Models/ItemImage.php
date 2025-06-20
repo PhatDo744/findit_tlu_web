@@ -19,4 +19,9 @@ class ItemImage extends Model
     {
         return $this->belongsTo(Item::class);
     }
+
+    public function getImageUrlAttribute($value)
+    {
+        return \Storage::url($value);
+    }
 }

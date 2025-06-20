@@ -204,7 +204,17 @@ class PostController extends Controller
             'caption' => $request->caption
         ]);
 
-        return response()->json($image, 201);
+        \Log::info('Image record created', ['image_id' => $image->id]);
+
+        // Trả về object đầy đủ, image_url đã là URL đầy đủ nhờ accessor
+        return response()->json([
+            'id' => $image->id,
+            'item_id' => $image->item_id,
+            'image_url' => $image->image_url,
+            'caption' => $image->caption,
+            'created_at' => $image->created_at,
+            'updated_at' => $image->updated_at,
+        ], 201);
     }
 
     /**
