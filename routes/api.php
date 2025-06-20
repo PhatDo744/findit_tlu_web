@@ -52,4 +52,16 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('notifications', [NotificationController::class, 'index']);
     Route::put('notifications/{id}/read', [NotificationController::class, 'markAsRead']);
     Route::put('notifications/read-all', [NotificationController::class, 'markAllAsRead']);
+
+    // New route for getting items by category
+    Route::get('items/category/{categoryId}', [PostController::class, 'itemsByCategory']);
+
+    // New route for getting items by type
+    Route::get('items/type/{itemType}', [PostController::class, 'itemsByType']);
+
+    // New route for getting items by category and type
+    Route::get('items/category/{categoryId}/type/{itemType}', [PostController::class, 'itemsByCategoryAndType']);
+
+    // New route for searching items
+    Route::get('items/search/{keyword}', [PostController::class, 'searchItems']);
 });

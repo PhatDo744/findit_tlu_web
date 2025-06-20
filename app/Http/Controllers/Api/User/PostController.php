@@ -154,12 +154,12 @@ class PostController extends Controller
     public function destroy(Request $request, $id)
     {
         $item = $request->user()->items()->findOrFail($id);
-        
+
         // Delete associated images
         foreach ($item->images as $image) {
             Storage::disk('public')->delete($image->image_url);
         }
-        
+
         // Xóa vĩnh viễn bài đăng
         $item->forceDelete();
         return response()->noContent();
@@ -230,5 +230,98 @@ class PostController extends Controller
         $image->delete();
 
         return response()->noContent();
+    }
+
+    /**
+     * Lấy danh sách items theo category_id
+     */
+    public function itemsByCategory(Request $request, $categoryId)
+    {
+        $query = Item::with(['user', 'category', 'images'])
+            ->where('status', 'approved')
+            ->where('category_id', $categoryId);
+
+        // Có thể thêm filter khác nếu cần
+        $items = $query->latest()->paginate($request->get('per_page', 20));
+
+        return response()->json([
+            'data' => $items->items(),
+            'meta' => [
+                'current_page' => $items->currentPage(),
+                'last_page' => $items->lastPage(),
+                'per_page' => $items->perPage(),
+                'total' => $items->total()
+            ]
+        ]);
+    }
+
+    /**
+     * Lấy danh sách items theo item_type (lost/found)
+     */
+    public function itemsByType(Request $request, $itemType)
+    {
+        $query = Item::with(['user', 'category', 'images'])
+            ->where('status', 'approved')
+            ->where('item_type', $itemType);
+
+        $items = $query->latest()->paginate($request->get('per_page', 20));
+
+        return response()->json([
+            'data' => $items->items(),
+            'meta' => [
+                'current_page' => $items->currentPage(),
+                'last_page' => $items->lastPage(),
+                'per_page' => $items->perPage(),
+                'total' => $items->total()
+            ]
+        ]);
+    }
+
+    /**
+     * Lấy danh sách items theo category_id và item_type
+     */
+    public function itemsByCategoryAndType(Request $request, $categoryId, $itemType)
+    {
+        $query = Item::with(['user', 'category', 'images'])
+            ->where('status', 'approved')
+            ->where('category_id', $categoryId)
+            ->where('item_type', $itemType);
+
+        $items = $query->latest()->paginate($request->get('per_page', 20));
+
+        return response()->json([
+            'data' => $items->items(),
+            'meta' => [
+                'current_page' => $items->currentPage(),
+                'last_page' => $items->lastPage(),
+                'per_page' => $items->perPage(),
+                'total' => $items->total()
+            ]
+        ]);
+    }
+
+    /**
+     * Tìm kiếm items theo từ khóa (keyword từ URL)
+     */
+    public function searchItems(Request $request, $keyword)
+    {
+        $query = Item::with(['user', 'category', 'images'])
+            ->where('status', 'approved')
+            ->where(function ($q) use ($keyword) {
+                $q->where('title', 'like', "%{$keyword}%");
+             
+            });
+
+        $items = $query->latest()->paginate($request->get('per_page', 20));
+
+        return response()->json([
+            'data' => $items->items(),
+            'meta' => [
+                'current_page' => $items->currentPage(),
+                'last_page' => $items->lastPage(),
+                'per_page' => $items->perPage(),
+                'total' => $items->total()
+            ]
+        ]);
     }
 }

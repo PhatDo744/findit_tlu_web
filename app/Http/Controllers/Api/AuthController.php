@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Validation\Rules\Password as PasswordRule;
 use Illuminate\Validation\ValidationException;
@@ -18,79 +19,117 @@ class AuthController extends Controller
      */
     public function login(Request $request)
     {
-        $request->validate([
-            'email' => 'required|email',
-            'password' => 'required'
-        ]);
-
-        $user = User::where('email', $request->email)->first();
-
-        if (!$user || !Hash::check($request->password, $user->password)) {
-            throw ValidationException::withMessages([
-                'email' => ['The provided credentials are incorrect.'],
+        try {
+            // Validate đầu vào
+            $request->validate([
+                'email' => 'required|email',
+                'password' => 'required'
             ]);
-        }
 
-        // Check if user is active
-        if (!$user->is_active) {
-            throw ValidationException::withMessages([
-                'email' => ['Your account has been deactivated.'],
+            // Tìm user theo email
+            $user = User::where('email', $request->email)->first();
+
+            // Kiểm tra thông tin đăng nhập
+            if (!$user || !Hash::check($request->password, $user->password)) {
+                return response()->json([
+                    'message' => 'The provided credentials are incorrect.'
+                ], 401);
+            }
+
+            // Kiểm tra tài khoản có bị khóa không
+            if (!$user->is_active) {
+                return response()->json([
+                    'message' => 'Your account has been deactivated.'
+                ], 403);
+            }
+
+            // Tạo token
+            $token = $user->createToken('auth-token')->plainTextToken;
+
+            // Trả về dữ liệu JSON
+            return response()->json([
+                'token' => $token,
+                'user' => [
+                    'id' => $user->id,
+                    'full_name' => $user->full_name,
+                    'email' => $user->email,
+                    'phone_number' => $user->phone_number,
+                    'role_id' => $user->role_id,
+                    'is_active' => $user->is_active
+                ]
             ]);
+        } catch (ValidationException $e) {
+            // Trả về lỗi validate rõ ràng
+            return response()->json([
+                'errors' => $e->errors()
+            ], 422);
+        } catch (\Exception $e) {
+            // Log lỗi và trả về lỗi hệ thống
+            Log::error('Login Error', ['error' => $e->getMessage()]);
+            return response()->json([
+                'message' => 'Internal Server Error',
+                'error' => $e->getMessage() // Có thể ẩn dòng này ở production
+            ], 500);
         }
-
-        $token = $user->createToken('auth-token')->plainTextToken;
-
-        return response()->json([
-            'token' => $token,
-            'user' => [
-                'id' => $user->id,
-                'full_name' => $user->full_name,
-                'email' => $user->email,
-                'phone_number' => $user->phone_number,
-                'role_id' => $user->role_id,
-                'is_active' => $user->is_active
-            ]
-        ]);
     }
 
     /**
      * Register
      */
+
     public function register(Request $request)
     {
-        $request->validate([
-            'full_name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users|regex:/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]*tlu\\.edu\\.vn$/',
-            'password' => ['required', 'confirmed', PasswordRule::defaults()],
-            'phone_number' => 'required|string|max:20'
-        ], [
-            'email.regex' => 'Email must be a valid TLU email address'
-        ]);
+        try {
+            // Validate dữ liệu đầu vào
+            $validatedData = $request->validate([
+                'full_name' => 'required|string|max:255',
+                'email' => 'required|email|unique:users|regex:/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]*tlu\\.edu\\.vn$/',
+                'password' => ['required', 'confirmed', PasswordRule::defaults()],
+                'phone_number' => 'required|string|max:20'
+            ], [
+                'email.regex' => 'Email must be a valid TLU email address'
+            ]);
 
-        $user = User::create([
-            'full_name' => $request->full_name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'phone_number' => $request->phone_number,
-            'role_id' => 3, // Default role: User
-            'is_active' => true
-        ]);
+            // Tạo user mới
+            $user = User::create([
+                'full_name' => $validatedData['full_name'],
+                'email' => $validatedData['email'],
+                'password' => Hash::make($validatedData['password']),
+                'phone_number' => $validatedData['phone_number'],
+                'role_id' => 3, // Default: user
+                'is_active' => true
+            ]);
 
-        $token = $user->createToken('auth-token')->plainTextToken;
+            // Tạo token
+            $token = $user->createToken('auth-token')->plainTextToken;
 
-        return response()->json([
-            'token' => $token,
-            'user' => [
-                'id' => $user->id,
-                'full_name' => $user->full_name,
-                'email' => $user->email,
-                'phone_number' => $user->phone_number,
-                'role_id' => $user->role_id,
-                'is_active' => $user->is_active
-            ]
-        ], 201);
+            // Trả về JSON
+            return response()->json([
+                'token' => $token,
+                'user' => [
+                    'id' => $user->id,
+                    'full_name' => $user->full_name,
+                    'email' => $user->email,
+                    'phone_number' => $user->phone_number,
+                    'role_id' => $user->role_id,
+                    'is_active' => $user->is_active
+                ]
+            ], 201);
+        } catch (ValidationException $e) {
+            // Trả về lỗi validate rõ ràng
+            return response()->json([
+                'errors' => $e->errors()
+            ], 422);
+        } catch (\Exception $e) {
+            // Log lỗi và trả về lỗi hệ thống
+            Log::error('Register Error', ['error' => $e->getMessage()]);
+
+            return response()->json([
+                'message' => 'Internal Server Error',
+                'error' => $e->getMessage() // Chỉ hiển thị khi debug
+            ], 500);
+        }
     }
-
     /**
      * Logout
      */
