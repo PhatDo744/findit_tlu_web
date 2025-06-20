@@ -1,61 +1,96 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# FindIt@TLU Web - Hệ thống quản lý đồ thất lạc Trường Đại học Thủy Lợi
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## Giới thiệu
+FindIt@TLU là hệ thống web giúp quản lý, đăng tin tìm kiếm và trả lại đồ thất lạc cho sinh viên, cán bộ tại Trường Đại học Thủy Lợi. Dự án xây dựng trên nền tảng Laravel (PHP) kết hợp giao diện hiện đại với Vite + TailwindCSS.
 
-## About Laravel
+## Tính năng chính
+- Đăng nhập, đăng ký, quên mật khẩu cho người dùng
+- Quản trị viên quản lý người dùng, danh mục, bài đăng
+- Người dùng đăng tin tìm/nhặt được đồ, cập nhật trạng thái
+- Quản lý thông báo, xác thực email, phân quyền
+- API cho mobile app hoặc tích hợp bên ngoài (sử dụng Laravel Sanctum để xác thực)
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Yêu cầu hệ thống
+- PHP >= 8.2
+- Composer
+- Node.js >= 18
+- MySQL/MariaDB
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Cài đặt & Khởi động
+1. **Clone dự án:**
+   ```bash
+   git clone <repo-url>
+   cd findit_tlu_web
+   ```
+2. **Cài đặt thư viện:**
+   ```bash
+   composer install
+   npm install
+   ```
+3. **Cài đặt và cấu hình Sanctum:**
+   ```bash
+   php artisan vendor:publish --provider="Laravel\Sanctum\SanctumServiceProvider"
+   php artisan migrate
+   ```
+   - Đảm bảo đã thêm middleware `\Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class` vào nhóm middleware `api` trong `app/Http/Kernel.php` nếu cần.
+4. **Tạo file cấu hình môi trường:**
+   ```bash
+   cp .env.example .env
+   ```
+   - Chỉnh sửa thông tin DB, mail... trong file `.env` cho phù hợp.
+5. **Sinh key ứng dụng:**
+   ```bash
+   php artisan key:generate
+   ```
+6. **Tạo database và migrate:**
+   - Tạo database `findit_tlu_web` (hoặc tên khác, sửa trong `.env`)
+   ```bash
+   php artisan migrate
+   php artisan db:seed
+   ```
+7. **Chạy ứng dụng:**
+   - Chạy server backend Laravel:
+     ```bash
+     php artisan serve
+     ```
+   - Chạy queue xử lý background (bắt buộc để gửi mail/thông báo):
+     ```bash
+     php artisan queue:work
+     ```
+   - Chạy frontend Vite (tự động reload khi sửa giao diện):
+     ```bash
+     npm run dev
+     ```
+   - Hoặc build frontend production:
+     ```bash
+     npm run build
+     ```
+   - Truy cập: http://localhost:8000
+   
+   > **Tip:** Có thể dùng lệnh sau để chạy đồng thời cả backend, queue và frontend (nếu đã cài `concurrently`):
+   > ```bash
+   > npx concurrently "php artisan serve" "php artisan queue:work" "npm run dev"
+   > ```
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Tài khoản mẫu
+- Admin: `admin@example.com` / `password`
+- Moderator: `moderator@example.com` / `password`
+- User: `test@e.tlu.edu.vn` / `12345678`
 
-## Learning Laravel
+## Cấu trúc thư mục
+- `app/` - Code backend Laravel
+- `resources/views/` - Giao diện Blade
+- `resources/js/`, `resources/css/` - Frontend Vite + Tailwind
+- `routes/` - Định nghĩa route web/api
+- `database/seeders/` - Dữ liệu mẫu
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## API
+- Xem chi tiết các route API trong `routes/api.php`
+- Sử dụng xác thực Sanctum cho các route cần đăng nhập
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+## Đóng góp & phát triển
+- Fork, tạo branch mới, pull request
+- Liên hệ nhóm phát triển nếu cần hỗ trợ
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-## Laravel Sponsors
-
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
-
-### Premium Partners
-
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
-
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+---
+© 2025 Nhóm 2 - FindIt@TLU
