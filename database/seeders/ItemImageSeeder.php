@@ -6,30 +6,35 @@ use Illuminate\Database\Seeder;
 use App\Models\Item;
 use App\Models\ItemImage;
 use Illuminate\Support\Facades\DB;
-use Faker\Factory as Faker;
 
 class ItemImageSeeder extends Seeder
 {
     public function run(): void
     {
         DB::table('item_images')->delete();
-        $faker = Faker::create();
 
-        $itemIds = Item::pluck('id')->toArray();
+        // Map tiêu đề item => tên file ảnh
+        $imageMap = [
+            'Máy tính laptop Gamming' => 'laptopGaming.jpg',
+            'Ví da màu nâu' => 'vida.png',
+            'Chìa khóa xe máy Honda' => 'chiakhoaxemay.png',
+            'Thẻ sinh viên' => 'thesinhvien.png',
+            'Balo màu đen' => 'Balomauden.png',
+            'Điện thoại iPhone 12' => 'iphone12.png',
+            'Áo khoác gió màu xanh' => 'aomauxanh.png',
+            'Máy tính Casio fx-580VN X' => 'MayTinhCasio.png',
+            'Thẻ ATM Vietcombank' => 'TheATM.png',
+            'Sách Giáo trình Toán cao cấp' => 'GiaoTrinhToan.png',
+        ];
 
-        if (empty($itemIds)) {
-            $this->command->info('Không có tin đăng nào để thêm ảnh.');
-            return;
-        }
-
-        foreach ($itemIds as $itemId) {
-            // Mỗi tin đăng có từ 0 đến 3 ảnh
-            $numberOfImages = $faker->numberBetween(0, 3);
-            for ($i = 0; $i < $numberOfImages; $i++) {
+        $items = Item::all();
+        foreach ($items as $item) {
+            $title = $item->title;
+            if (isset($imageMap[$title])) {
                 ItemImage::create([
-                    'item_id' => $itemId,
-                    'image_url' => $faker->imageUrl(640, 480, 'technics', true, 'Faker'), // Thêm tham số text
-                    'caption' => $faker->optional(0.5)->sentence(3), // 50% có caption
+                    'item_id' => $item->id,
+                    'image_url' => 'item-images/' . $imageMap[$title],
+                    'caption' => $title,
                 ]);
             }
         }
