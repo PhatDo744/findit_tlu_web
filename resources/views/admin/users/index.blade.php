@@ -73,8 +73,7 @@
 
 @section('content')
 <div class="container-fluid">
-    <h1 class="h3 mb-2 page-title">Quản Lý Người Dùng Ứng Dụng Mobile</h1>
-    <p class="mb-4">Quản lý tài khoản người dùng sử dụng ứng dụng mobile Findit@TLU.</p>
+
 
     <!-- Thông báo Flash -->
     @if(session('success'))

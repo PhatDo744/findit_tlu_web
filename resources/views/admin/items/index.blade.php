@@ -11,167 +11,65 @@
         border-radius: 4px;
         border: 1px solid #eee;
     }
-
-    .table th,
-    .table td {
+    .table th, .table td {
         vertical-align: middle;
+        text-align: center;
+        font-size: 0.98rem;
+        padding: 14px 8px;
     }
-
-    .item-description-short {
-        font-size: 0.85em;
-        color: #6c757d;
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        /* Số dòng hiển thị */
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        max-width: 300px;
-        /* Giới hạn chiều rộng để tránh quá dài */
+    .table thead th {
+        background-color: #1c3d72;
+        color: #fff;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 1rem;
+        padding: 16px;
+        border-bottom: none;
     }
-
-    .action-icons a,
-    .action-icons button {
+    .badge-status {
+        font-size: 0.85rem;
+        padding: 0.4em 0.7em;
+        min-width: 90px;
+        text-align: center;
+        border-radius: 8px;
+    }
+    .action-icons {
+        padding: 4px !important;
+        white-space: nowrap;
+    }
+    .action-icons a, .action-icons button {
         margin-right: 5px;
         color: #6c757d;
         background: none;
         border: none;
         padding: 0;
+        font-size: 1.2rem;
     }
-
-    .action-icons a:hover,
-    .action-icons button:hover {
+    .action-icons a:hover, .action-icons button:hover {
         color: #1c3d72;
     }
-
-    .action-icons .btn-delete:hover {
-        color: #dc3545;
-    }
-
-    .action-icons .btn-approve:hover {
-        color: #198754;
-    }
-
-    .action-icons .btn-reject:hover {
-        color: #dc3545;
-    }
-
-    .form-filter .form-control,
-    .form-filter .form-select {
-        font-size: 0.9rem;
-    }
-
-    .badge-status {
-        min-width: 90px;
-        /* Đảm bảo các badge có chiều rộng tương đối */
-        text-align: center;
-    }
-
-    .btn-action-icon {
-        width: 40px;
-        /* Kích thước cố định cho nút */
-        height: 40px;
-        display: inline-flex;
-        /* Sử dụng flexbox để căn giữa icon */
-        align-items: center;
-        justify-content: center;
-        border-radius: 8px;
-        /* Bo góc nhẹ */
-        font-size: 1.2rem;
-        /* Kích thước icon */
-        padding: 0;
-        /* Loại bỏ padding mặc định của button */
-        text-decoration: none;
-        /* Loại bỏ gạch chân cho <a> */
-        box-shadow: none !important;
-        /* Đảm bảo không có shadow từ Bootstrap mặc định */
-    }
-
-    /* Các màu sắc và hiệu ứng cho từng loại nút */
-
-    /* Nút Xem - Xanh dương */
-    .btn-action-primary {
-        background-color: rgba(0, 123, 255, 0.1);
-        /* Màu xanh dương nhạt */
-        border: 1px solid rgba(0, 123, 255, 0.2);
-        /* Viền xanh dương */
-        color: #007bff;
-        /* Icon màu xanh dương */
-    }
-
-    .btn-action-primary:hover {
-        background-color: rgba(0, 123, 255, 0.15);
-        /* Hơi đậm hơn khi hover */
-        border-color: rgba(0, 123, 255, 0.25);
-        color: #007bff;
-    }
-
-    /* Nút Duyệt - Xanh lá */
-    .btn-action-success {
-        background-color: rgba(40, 167, 69, 0.1);
-        /* Màu xanh lá nhạt */
-        border: 1px solid rgba(40, 167, 69, 0.2);
-        /* Viền xanh lá */
-        color: #28a745;
-        /* Icon màu xanh lá */
-    }
-
-    .btn-action-success:hover {
-        background-color: rgba(40, 167, 69, 0.15);
-        border-color: rgba(40, 167, 69, 0.25);
-        color: #28a745;
-    }
-
-    /* Nút Từ chối - Đỏ */
-    .btn-action-danger {
-        background-color: rgba(220, 53, 69, 0.1);
-        /* Màu đỏ nhạt */
-        border: 1px solid rgba(220, 53, 69, 0.2);
-        /* Viền đỏ */
-        color: #dc3545;
-        /* Icon màu đỏ */
-    }
-
-    .btn-action-danger:hover {
-        background-color: rgba(220, 53, 69, 0.15);
-        border-color: rgba(220, 53, 69, 0.25);
-        color: #dc3545;
-    }
-
-    /* Nút Xóa - Xám */
-    .btn-action-secondary {
-        background-color: rgba(108, 117, 125, 0.1);
-        /* Màu xám nhạt */
-        border: 1px solid rgba(108, 117, 125, 0.2);
-        /* Viền xám */
+    .action-icons .btn-delete:hover { color: #dc3545; }
+    .action-icons .btn-approve:hover { color: #198754; }
+    .action-icons .btn-reject:hover { color: #dc3545; }
+    .item-description-short {
+        font-size: 0.85em;
         color: #6c757d;
-        /* Icon màu xám */
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 300px;
+        margin: 0 auto;
     }
-
-    .btn-action-secondary:hover {
-        background-color: rgba(108, 117, 125, 0.15);
-        border-color: rgba(108, 117, 125, 0.25);
-        color: #6c757d;
-    }
-
-    .btn-37 {
-        padding: 37px;
-    }
-
-    .table thead th:first-child {
-        border-top-left-radius: 0.5rem;
-    }
-
-    .table thead th:last-child {
-        border-top-right-radius: 0.5rem;
+    .table-responsive {
+        overflow-x: auto;
     }
 </style>
 @endpush
 
 @section('content')
 <div class="container-fluid">
-    <h1 class="h3 mb-2 page-title">Quản lý Bài Đăng</h1>
-    <p class="mb-4">Xem, duyệt, từ chối và quản lý các tin đăng của người dùng.</p>
     @include('partials.admin.flash_messages')
 
     <div class="card shadow mb-4">
@@ -192,7 +90,6 @@
                         <option value="rejected" {{ request('status') == 'rejected' ? 'selected' : '' }}>Từ chối</option>
                         <option value="returned" {{ request('status') == 'returned' ? 'selected' : '' }}>Đã trả/tìm thấy</option>
                         <option value="expired" {{ request('status') == 'expired' ? 'selected' : '' }}>Hết hạn</option>
-                        {{-- Thêm các trạng thái khác nếu có --}}
                     </select>
                 </div>
                 <div class="col-md-2 col-lg-2">
@@ -205,7 +102,7 @@
                 <div class="col-md-3 col-lg-2">
                     <select class="form-select" name="category_id">
                         <option value="">Tất cả danh mục</option>
-                        @foreach($categories as $category) {{-- $categories cần được truyền từ controller --}}
+                        @foreach($categories as $category)
                         <option value="{{ $category->id }}" {{ request('category_id') == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
                         @endforeach
                     </select>
@@ -217,113 +114,84 @@
                     <a href="{{ route('admin.items.index') }}" class="btn btn-outline-secondary w-100"><i class="bi bi-arrow-clockwise me-1"></i> Reset</a>
                 </div>
             </form>
-
-
         </div>
     </div>
     <div class="card shadow">
         <div class="table-responsive">
-            <table class="">
-                <thead class=" text-light text-uppercase text-center align-middle" style="background-color: #1c3d72;">
+            <table class="table my-custom-table" style="width: 100%;">
+                <thead>
                     <tr>
-                        <th class="">Hình ảnh</th>
-                        <th class="">Tiêu đề</th>
-                        <th class="">Loại</th>
-                        <th class="">Danh mục</th>
-                        <th class="">Người đăng</th>
-                        <th class="">Trạng thái</th>
-                        <th class="">Ngày đăng</th>
-                        <th class="">Hành động</th>
+                        <th>#</th>
+                        <th>Hình ảnh</th>
+                        <th>Tiêu đề</th>
+                        <th>Loại</th>
+                        <th>Danh mục</th>
+                        <th>Người đăng</th>
+                        <th>Trạng thái</th>
+                        <th>Ngày đăng</th>
+                        <th>Hành động</th>
                     </tr>
                 </thead>
-
                 <tbody>
-                    @forelse ($items as $item)
+                    @forelse ($items as $index => $item)
                     <tr>
-                        <td class="text-center align-middle">
-                            <img src="{{ $item->images->first()->image_url ?? '/images/default_item_placeholder.png' }}"
-                                alt="{{ Str::limit($item->title, 20) }}" class="item-thumbnail">
+                        <td>{{ $items->firstItem() + $index }}</td>
+                        <td>
+                            <img src="{{ $item->images->first()->image_url ?? '/images/default_item_placeholder.png' }}" alt="{{ Str::limit($item->title, 20) }}" class="item-thumbnail">
                         </td>
-                        <td class=" align-middle">
-                            {{ $item->title }}
-                            <p class="item-description-short mb-0">{{ $item->description }}</p>
+                        <td>
+                            <div style="font-weight:600;">{{ $item->title }}</div>
+                            <div class="item-description-short">{{ $item->description }}</div>
                         </td>
-                        <td class="text-center">
+                        <td>
                             @if($item->item_type == 'lost')
-                            <span class="badge bg-danger-subtle text-danger fw-semibold">Mất đồ</span>
+                            <span class="badge bg-danger-subtle text-danger badge-status">Mất đồ</span>
                             @else
-                            <span class="badge bg-success-subtle text-success fw-semibold">Nhặt được</span>
+                            <span class="badge bg-success-subtle text-success badge-status">Nhặt được</span>
                             @endif
                         </td>
-                        <td class="text-center align-middle">{{ $item->category->name ?? 'N/A' }}</td>
-                        <td class="text-center align-middle">{{ $item->user->full_name ?? 'N/A' }}</td>
-                        <td class="text-center align-middle">
+                        <td>{{ $item->category->name ?? 'N/A' }}</td>
+                        <td>{{ $item->user->full_name ?? 'N/A' }}</td>
+                        <td>
                             @if($item->status == 'approved')
-                            <span class="badge bg-success-subtle text-success fw-semibold">Đã duyệt</span>
+                            <span class="badge bg-success-subtle text-success badge-status">Đã duyệt</span>
                             @elseif($item->status == 'pending_approval')
-                            <span class="badge bg-warning-subtle text-warning fw-semibold">Chờ duyệt</span>
+                            <span class="badge bg-warning-subtle text-warning badge-status">Chờ duyệt</span>
                             @elseif($item->status == 'rejected')
-                            <span class="badge bg-danger-subtle text-danger fw-semibold">Từ chối</span>
+                            <span class="badge bg-danger-subtle text-danger badge-status">Từ chối</span>
                             @elseif($item->status == 'returned')
-                            <span class="badge bg-primary-subtle text-primary fw-semibold">Trả lại</span>
+                            <span class="badge bg-primary-subtle text-primary badge-status">Đã trả/tìm thấy</span>
                             @elseif($item->status == 'expired')
-                            <span class="badge bg-secondary-subtle text-secondary fw-semibold">Hết hạn</span>
+                            <span class="badge bg-secondary-subtle text-secondary badge-status">Hết hạn</span>
                             @endif
-
                         </td>
-                        <td class="text-center align-middle">{{ $item->created_at->format('d/m/Y') }}</td>
-                        <td class="action-icons text-end d-flex justify-content-end align-items-center gap-2 " style="padding: 37px;"> {{-- Thêm align-items-center và gap-2 --}}
-                            <a href="{{ route('admin.items.show', $item->id) }}" title="Xem chi tiết"
-                                class="btn btn-action-icon btn-action-primary bg-primary-subtle"> {{-- Sử dụng class mới --}}
-                                <i class="bi bi-eye text-primary "></i> {{-- Icon không fill như ảnh --}}
+                        <td>{{ $item->created_at->format('d/m/Y') }}</td>
+                        <td class="action-icons p-3">
+                            <a href="{{ route('admin.items.show', $item->id) }}" title="Xem chi tiết" class="btn btn-action-icon btn-action-primary bg-primary-subtle">
+                                <i class="bi bi-eye text-primary p-2"></i>
                             </a>
-
                             @if($item->status == 'pending_approval')
-                            <button type="button" class="btn btn-action-icon btn-action-success bg-success-subtle" {{-- Sử dụng class mới --}}
-                                title="Duyệt bài" data-bs-toggle="modal" data-bs-target="#approveItemModal"
-                                data-item-id="{{ $item->id }}"
-                                data-item-title="{{ $item->title }}"
-                                data-item-type="{{ $item->item_type }}"
-                                data-item-category="{{ $item->category->name ?? '' }}"
-                                data-item-user="{{ $item->user->full_name ?? '' }}"
-                                data-item-status="{{ $item->status }}">
-                                <i class="bi bi-check text-success"></i> {{-- Icon không fill như ảnh --}}
+                            <button type="button" class="btn btn-action-icon btn-action-success bg-success-subtle" title="Duyệt bài" data-bs-toggle="modal" data-bs-target="#approveItemModal" data-item-id="{{ $item->id }}" data-item-title="{{ $item->title }}" data-item-type="{{ $item->item_type }}" data-item-category="{{ $item->category->name ?? '' }}" data-item-user="{{ $item->user->full_name ?? '' }}" data-item-status="{{ $item->status }}">
+                                <i class="bi bi-check text-success p-2"></i>
                             </button>
-
-                            <button type="button" class="btn btn-action-icon btn-action-danger bg-danger-subtle" {{-- Sử dụng class mới --}}
-                                title="Từ chối bài" data-bs-toggle="modal" data-bs-target="#rejectItemModal"
-                                data-item-id="{{ $item->id }}"
-                                data-item-title="{{ $item->title }}"
-                                data-item-type="{{ $item->item_type }}"
-                                data-item-category="{{ $item->category->name ?? '' }}"
-                                data-item-user="{{ $item->user->full_name ?? '' }}"
-                                data-item-status="{{ $item->status }}">
-                                <i class="bi bi-x text-danger"></i> {{-- Icon không fill như ảnh --}}
+                            <button type="button" class="btn btn-action-icon btn-action-danger bg-danger-subtle" title="Từ chối bài" data-bs-toggle="modal" data-bs-target="#rejectItemModal" data-item-id="{{ $item->id }}" data-item-title="{{ $item->title }}" data-item-type="{{ $item->item_type }}" data-item-category="{{ $item->category->name ?? '' }}" data-item-user="{{ $item->user->full_name ?? '' }}" data-item-status="{{ $item->status }}">
+                                <i class="bi bi-x text-danger p-2"></i>
                             </button>
                             @endif
-
-                            <button type="button" class="btn btn-action-icon btn-action-secondary bg-secondary-subtle" {{-- Sử dụng class mới --}}
-                                title="Xóa bài" data-bs-toggle="modal" data-bs-target="#deleteItemModal"
-                                data-item-id="{{ $item->id }}"
-                                data-item-title="{{ $item->title }}"
-                                data-item-type="{{ $item->item_type }}"
-                                data-item-category="{{ $item->category->name ?? '' }}"
-                                data-item-user="{{ $item->user->full_name ?? '' }}"
-                                data-item-status="{{ $item->status }}">
-                                <i class="bi bi-trash text-secondary"></i> {{-- Icon không fill như ảnh --}}
+                            <button type="button" class="btn btn-action-icon btn-action-secondary bg-secondary-subtle" title="Xóa bài" data-bs-toggle="modal" data-bs-target="#deleteItemModal" data-item-id="{{ $item->id }}" data-item-title="{{ $item->title }}" data-item-type="{{ $item->item_type }}" data-item-category="{{ $item->category->name ?? '' }}" data-item-user="{{ $item->user->full_name ?? '' }}" data-item-status="{{ $item->status }}">
+                                <i class="bi bi-trash text-secondary p-2"></i>
                             </button>
                         </td>
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="8" class="text-center">Không tìm thấy bài đăng nào.</td>
+                        <td colspan="9" class="text-center">Không tìm thấy bài đăng nào.</td>
                     </tr>
                     @endforelse
                 </tbody>
             </table>
         </div>
     </div>
-
     @if ($items->hasPages())
     <div class="d-flex justify-content-between align-items-center mt-3">
         <small>Hiển thị {{ $items->firstItem() }} đến {{ $items->lastItem() }} của {{ $items->total() }} kết quả</small>
@@ -366,7 +234,7 @@
                             </div>
                             <div class="d-flex mb-2 small text-secondary">
                                 <span class="me-auto text-dark">Loại bài đăng:</span>
-                                <span class="text-end text-success bg-success-subtle fw-medium badge" id="approveItemType"></span>
+                                <span class="text-end text-dark fw-medium badge" id="approveItemType"></span>
                             </div>
                             <div class="d-flex mb-2 small text-secondary">
                                 <span class="me-auto text-dark">Danh mục:</span>
@@ -432,7 +300,7 @@
                             </div>
                             <div class="d-flex mb-2 small text-secondary">
                                 <span class="me-auto text-dark">Loại bài đăng:</span>
-                                <span class="text-end text-success bg-success-subtle fw-medium badge" id="rejectItemType"></span>
+                                <span class="text-end text-dark fw-medium badge" id="rejectItemType"></span>
                             </div>
                             <div class="d-flex mb-2 small text-secondary">
                                 <span class="me-auto text-dark">Danh mục:</span>

@@ -25,7 +25,7 @@ class DashboardController extends Controller
 
         $recentItems = Item::with('user') // Eager load user relationship
                             ->orderBy('created_at', 'desc')
-                            ->take(5)
+                            ->take(10)
                             ->get();
 
         $newUsers = User::orderBy('created_at', 'desc')

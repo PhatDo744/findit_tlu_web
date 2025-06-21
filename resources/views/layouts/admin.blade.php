@@ -9,17 +9,67 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        body, html {
+            height: 100vh;
+            min-height: 100vh;
             background-color: #f8f9fa;
         }
-
+        .container-fluid {
+            height: 100vh;
+            padding: 0;
+        }
+        .row {
+            height: 100%;
+            margin: 0;
+        }
         .sidebar {
             background-color: #1c3d72;
-            /* TLU Deep Blue */
             color: #fff;
-            min-height: 100vh;
+            height: 100vh;
             padding-top: 15px;
+            overflow-y: auto;
+        }
+        main.position-relative {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            min-height: 0;
+            padding: 0 !important;
+        }
+        .top-navbar {
+            background-color: #fff;
+            border-bottom: 1px solid #dee2e6;
+            padding: 0.75rem 1rem;
+            height: 70px;
+            flex-shrink: 0;
+        }
+        .content-area {
+            flex: 1 1 0%;
+            min-height: 0;
+            overflow-y: auto;
+            padding: 24px 18px 18px 18px;
+        }
+        .footer {
+            text-align: center;
+            padding: 10px 0;
+            font-size: 0.8rem;
+            color: #6c757d;
+            background-color: #f8f9fa;
+            border-top: 1px solid #dee2e6;
+            width: 100%;
+            flex-shrink: 0;
+        }
+        .dashboard-page body {
+            height: 100vh;
+            overflow: hidden;
+        }
+        
+        .dashboard-page .container-fluid {
+            height: 100vh;
+        }
+        
+        .dashboard-page .row {
+            height: 100%;
         }
 
         .sidebar .logo {
@@ -67,45 +117,36 @@
             text-align: center;
         }
 
-        .top-navbar {
-            background-color: #fff;
-            border-bottom: 1px solid #dee2e6;
-            padding: 0.75rem 1rem;
-        }
-
         .navbar-brand-mobile {
             color: #1c3d72;
             font-weight: bold;
         }
 
         .content-wrapper {
-            padding: 20px;
+            padding: 15px;
+        }
+
+        .dashboard-page .content-wrapper {
+            height: calc(100vh - 70px);
+            overflow-y: auto;
         }
 
         .main-content {
             background-color: #fff;
-            padding: 25px;
+            padding: 20px;
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            height: 100%;
         }
 
         .breadcrumb {
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
         }
 
         .page-title {
             color: #1c3d72;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
             font-weight: 600;
-        }
-
-        .footer {
-            text-align: center;
-            padding: 15px 0;
-            font-size: 0.9rem;
-            color: #6c757d;
-            background-color: #f8f9fa;
-            border-top: 1px solid #dee2e6;
         }
 
         @media (max-width: 768px) {
@@ -154,6 +195,7 @@
             /* Khoảng cách trên và dưới */
         }
     </style>
+    @stack('styles')
 </head>
 
 <body>
@@ -165,8 +207,14 @@
                     <a href="{{ route('admin.dashboard') }}" class="logo">
                         Findit@TLU
                     </a>
-                    <div class="admin-panel-text">Admin Panel</div>
-                    <hr class="sidebar-divider">  
+                    <div class="admin-panel-text">
+                        @if(request()->routeIs('admin.items.show'))
+                            Chi tiết bài đăng
+                        @else
+                            Admin Panel
+                        @endif
+                    </div>
+                    <hr class="sidebar-divider">  
                     <ul class="nav flex-column">
                         <li class="nav-item">
                             <a class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}" href="{{ route('admin.dashboard') }}">
@@ -193,35 +241,36 @@
             </nav>
 
             <!-- Main content area -->
-            <main class="position-relative col-md-9 ms-sm-auto col-lg-10 px-md-4 content-wrapper">
+            <main class="position-relative col-md-9 ms-sm-auto col-lg-10 px-0 d-flex flex-column">
                 <!-- Top Navbar -->
-                <nav class="navbar navbar-expand-lg top-navbar" style="background-color: #f8f9fa;     border-bottom: none !important; /* Bỏ viền dưới */">
-                    <div class="container-fluid">
-                        <button class="sidebar-toggler" type="button" id="sidebarToggler">
+                <nav class="navbar navbar-expand-lg top-navbar d-flex justify-content-between align-items-center" style="background-color: #f8f9fa; border-bottom: none !important;">
+                    <div class="d-flex align-items-center">
+                        <button class="sidebar-toggler me-3" type="button" id="sidebarToggler">
                             <i class="bi bi-list"></i>
                         </button>
-                        <a class="navbar-brand-mobile d-md-none" href="#">Findit@TLU</a>
+                        <h2 class="fw-bold mb-0" style="color:#22223b;">@yield('title', 'Admin Panel')</h2>
+                    </div>
 
-                        <div class=" collapse navbar-collapse" id="navbarNavDropdown">
-                            <ul class="position-absolute top-0 end-0 navbar-nav ms-auto">
-                                <li class="nav-item dropdown">
-                                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                        <i class="bi bi-person-circle"></i> {{ Auth::user()->full_name ?? 'Admin' }}
+                    <div class="navbar-nav">
+                        <div class="nav-item dropdown">
+                            <a class="nav-link d-flex align-items-center gap-2 p-2 dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="background: #fff; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); min-width: 180px;">
+                                <span style="display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:50%;background:#1356a4;color:#fff;font-weight:600;font-size:1.3rem;">
+                                    {{ strtoupper(mb_substr(Auth::user()->full_name ?? 'A', 0, 1)) }}
+                                </span>
+                                <span style="font-weight:600;color:#333;">{{ Auth::user()->full_name ?? 'Admin' }}</span>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
+                                <li><a class="dropdown-item" href="#">Thông tin tài khoản</a></li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                        Đăng xuất
                                     </a>
-                                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
-                                        <li><a class="dropdown-item" href="#">Thông tin tài khoản</a></li>
-                                        <li>
-                                            <hr class="dropdown-divider">
-                                        </li>
-                                        <li>
-                                            <a class="dropdown-item" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                                                Đăng xuất
-                                            </a>
-                                            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                                                @csrf
-                                            </form>
-                                        </li>
-                                    </ul>
+                                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                                        @csrf
+                                    </form>
                                 </li>
                             </ul>
                         </div>
@@ -229,15 +278,13 @@
                 </nav>
 
                 <!-- Page Content -->
-                <div class="pt-3">
+                <div class="content-area">
                     @yield('content')
                 </div>
 
                 <!-- Footer -->
-                <footer class="footer mt-auto py-3">
-                    <div class="container-fluid">
-                        <span class="text-muted">&copy; {{ date('Y') }} Findit@TLU, All rights reserved.</span>
-                    </div>
+                <footer class="text-center py-2" style="background-color: #f8f9fa; font-size: 0.85rem; color: #6c757d;">
+                    <span>&copy; {{ date('Y') }} Findit@TLU. All rights reserved.</span>
                 </footer>
             </main>
         </div>

@@ -24,13 +24,36 @@
     .table td {
         vertical-align: middle;
     }
+
+    .category-header-box {
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+        padding: 24px 24px 20px 24px;
+        margin-bottom: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .category-header-title {
+        font-size: 1.15rem;
+        font-weight: 600;
+        margin-bottom: 0;
+    }
+
+    .category-header-btn {
+        min-width: 160px;
+        font-weight: 500;
+        font-size: 1rem;
+        border-radius: 8px;
+        box-shadow: none;
+    }
 </style>
 @endpush
 
 @section('content')
 <div class="container-fluid">
-    <h1 class="h3 mb-2 page-title">Quản lý Danh mục</h1>
-    <p class="mb-4">Thêm, sửa, xóa các danh mục đồ vật (ví dụ: Điện tử, Giấy tờ, Ví/Túi).</p>
 
     <!-- Thông báo Flash -->
     @if(session('success'))
@@ -56,16 +79,16 @@
     </div>
     @endif
 
+    <!-- Khối đầu danh sách danh mục -->
+    <div class="category-header-box">
+        <div class="category-header-title">Danh sách Danh mục</div>
+        <button style="background-color: #1c3d72; color:white" class="btn category-header-btn" data-bs-toggle="modal" data-bs-target="#addCategoryModal">
+            <i class="bi bi-plus-circle me-1"></i> Thêm Danh mục
+        </button>
+    </div>
 
     <div class="card shadow mb-4">
-        <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-            <h6 class="m-0 font-weight-bold text-primary">Danh sách Danh mục</h6>
-            <button style="background-color: #1c3d72; color:white" class="btn text-light btn-sm" data-bs-toggle="modal" data-bs-target="#addCategoryModal">
-                <i class="bi bi-plus-circle me-1"></i> Thêm Danh Mục
-            </button>
-        </div>
         <div class="card-body">
-
             <table style=" width: 100%; ;">
                 <thead style="background-color: #1c3d72; color:white">
                     <tr>
@@ -112,8 +135,7 @@
 
             <!-- Phân trang -->
             @if ($categories->hasPages())
-            <div class="d-flex justify-content-between align-items-center mt-3">
-                <small>Hiển thị {{ $categories->firstItem() }} đến {{ $categories->lastItem() }} của {{ $categories->total() }} kết quả</small>
+            <div class="d-flex justify-content-end align-items-center mt-3">
                 {{ $categories->links() }}
             </div>
             @endif
