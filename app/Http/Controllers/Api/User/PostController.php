@@ -141,7 +141,17 @@ class PostController extends Controller
             'is_contact_info_public' => 'sometimes|boolean'
         ]);
 
+        // Ép status về pending_approval nếu không phải returned
+        if ($item->status !== 'returned') {
+            $validated['status'] = 'pending_approval';
+        }
+
         $item->update($validated);
+
+        // Gửi notification nếu chuyển về pending_approval
+        if (isset($validated['status']) && $validated['status'] === 'pending_approval') {
+            $request->user()->notify(new \App\Notifications\PostPendingApprovalNotification($item));
+        }
 
         return response()->json([
             'post' => $item->load(['category', 'images'])
