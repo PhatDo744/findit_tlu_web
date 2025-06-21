@@ -40,10 +40,21 @@ class LoginController extends Controller
             // Lấy thông tin user sau khi đăng nhập
             $user = Auth::user();
 
-            // TODO: Kiểm tra vai trò (role_id) của user và chuyển hướng tương ứng
-            // Ví dụ: nếu user->role_id == 1 (Admin) thì ->route('admin.dashboard')
-            // nếu user->role_id == 2 (Moderator) thì ->route('moderator.dashboard')
-            // Hiện tại, chúng ta mặc định chuyển hướng đến admin.dashboard
+            // Chỉ cho phép admin (1) hoặc moderator (2) đăng nhập
+            if ($user->role_id != 1 && $user->role_id != 2) {
+                Auth::logout();
+                $request->session()->invalidate();
+                $request->session()->regenerateToken();
+                return back()->withErrors([
+                    'email' => 'Chỉ quản trị viên hoặc kiểm duyệt viên mới được phép đăng nhập vào hệ thống.',
+                ])->onlyInput('email');
+            }
+
+            // Nếu là moderator thì chuyển hướng về trang quản lý bài đăng
+            if ($user->role_id == 2) {
+                return redirect()->intended(route('admin.items.index'));
+            }
+
             return redirect()->intended(route('admin.dashboard'));
         }
 
@@ -62,6 +73,6 @@ class LoginController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect('/');
+        return redirect()->route('login');
     }
 }

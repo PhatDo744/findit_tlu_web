@@ -11,12 +11,15 @@
         border-radius: 4px;
         border: 1px solid #eee;
     }
-    .table th, .table td {
+
+    .table th,
+    .table td {
         vertical-align: middle;
         text-align: center;
         font-size: 0.98rem;
         padding: 14px 8px;
     }
+
     .table thead th {
         background-color: #1c3d72;
         color: #fff;
@@ -26,6 +29,7 @@
         padding: 16px;
         border-bottom: none;
     }
+
     .badge-status {
         font-size: 0.85rem;
         padding: 0.4em 0.7em;
@@ -33,11 +37,14 @@
         text-align: center;
         border-radius: 8px;
     }
+
     .action-icons {
         padding: 4px !important;
         white-space: nowrap;
     }
-    .action-icons a, .action-icons button {
+
+    .action-icons a,
+    .action-icons button {
         margin-right: 5px;
         color: #6c757d;
         background: none;
@@ -45,12 +52,24 @@
         padding: 0;
         font-size: 1.2rem;
     }
-    .action-icons a:hover, .action-icons button:hover {
+
+    .action-icons a:hover,
+    .action-icons button:hover {
         color: #1c3d72;
     }
-    .action-icons .btn-delete:hover { color: #dc3545; }
-    .action-icons .btn-approve:hover { color: #198754; }
-    .action-icons .btn-reject:hover { color: #dc3545; }
+
+    .action-icons .btn-delete:hover {
+        color: #dc3545;
+    }
+
+    .action-icons .btn-approve:hover {
+        color: #198754;
+    }
+
+    .action-icons .btn-reject:hover {
+        color: #dc3545;
+    }
+
     .item-description-short {
         font-size: 0.85em;
         color: #6c757d;
@@ -62,6 +81,7 @@
         max-width: 300px;
         margin: 0 auto;
     }
+
     .table-responsive {
         overflow-x: auto;
     }
@@ -70,7 +90,7 @@
 
 @section('content')
 <div class="container-fluid">
-    @include('partials.admin.flash_messages')
+
 
     <div class="card shadow mb-4">
         <div class="card-header py-3">
@@ -211,18 +231,6 @@
                 </div>
                 <div class="modal-body pb-0">
                     <p class="mb-3 text-secondary small">Bài đăng sẽ được hiển thị công khai</p>
-                    <div class="alert alert-success bg-success-subtle border-success-subtle text-success-emphasis d-flex align-items-start p-3 mb-4 rounded">
-                        <i class="fas fa-check-circle fs-5 me-2" style="color: #198754;"></i>
-                        <div>
-                            <h6 class="alert-heading fw-bold mb-2">Thông tin duyệt bài</h6>
-                            <ul class="mb-0 ps-3 small">
-                                <li>Bài đăng sẽ hiển thị công khai trên ứng dụng</li>
-                                <li>Người dùng sẽ nhận được thông báo</li>
-                                <li>Bài đăng có thể được tìm kiếm bởi người khác</li>
-                                <li>Trạng thái sẽ chuyển thành "Đã duyệt"</li>
-                            </ul>
-                        </div>
-                    </div>
                     <div class="card border-0 bg-light-subtle mb-4">
                         <div class="card-body p-3">
                             <h6 class="card-title fw-bold mb-3 d-flex align-items-center">
@@ -279,18 +287,6 @@
                 </div>
                 <div class="modal-body pb-0">
                     <p class="mb-3 text-secondary small">Bài đăng sẽ không được hiển thị công khai</p>
-                    <div class="alert alert-danger bg-danger-subtle border-danger-subtle text-danger-emphasis d-flex align-items-start p-3 mb-4 rounded">
-                        <i class="fas fa-exclamation-triangle fs-5 me-2" style="color: #dc3545;"></i>
-                        <div>
-                            <h6 class="alert-heading fw-bold mb-2">Lưu ý quan trọng</h6>
-                            <ul class="mb-0 ps-3 small">
-                                <li>Bài đăng sẽ bị từ chối và không hiển thị công khai</li>
-                                <li>Người dùng sẽ nhận được thông báo</li>
-                                <li>Hành động này không thể hoàn tác</li>
-                                <li>Người dùng có thể chỉnh sửa và đăng lại</li>
-                            </ul>
-                        </div>
-                    </div>
                     <div class="card border-0 bg-light-subtle mb-4">
                         <div class="card-body p-3">
                             <h6 class="card-title fw-bold mb-3">Thông tin bài đăng</h6>

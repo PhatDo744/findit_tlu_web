@@ -137,7 +137,7 @@ class ItemController extends Controller
             }
 
             $item->save();
-            
+
             $redirectResponse = redirect();
             if (url()->previous() == route('admin.items.show', $item->id)) {
                 $redirectResponse = $redirectResponse->route('admin.items.show', $item->id);
@@ -145,7 +145,6 @@ class ItemController extends Controller
                 $redirectResponse = $redirectResponse->route('admin.items.index');
             }
             return $redirectResponse->with('success_title', $title)->with('success', $message);
-
         } catch (\Exception $e) {
             Log::error("Error updating item status for item ID {$item->id}: " . $e->getMessage());
             if (url()->previous() == route('admin.items.show', $item->id)) {
@@ -169,14 +168,14 @@ class ItemController extends Controller
         try {
             $itemTitle = $item->title;
             $deleteReason = $request->input('admin_delete_comment');
-            
+
             // Gửi thông báo cho user về việc bài đăng bị xóa
             $item->user->notify(new \App\Notifications\PostDeletedNotification($item, $deleteReason));
-            
+
             // TODO: Xóa ảnh liên quan trong storage nếu có
             // foreach ($item->images as $image) { Storage::delete($image->image_url_path_relative_to_storage_disk); }
             $item->delete(); // Sử dụng soft delete nếu model Item dùng SoftDeletes trait
-            
+
             return redirect()->route('admin.items.index')
                 ->with('success_title', 'Xóa bài thành công!')
                 ->with('success', "Bài đăng đã được xóa vĩnh viễn khỏi hệ thống và người dùng đã nhận được thông báo.");

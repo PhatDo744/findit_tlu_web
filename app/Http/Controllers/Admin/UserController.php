@@ -55,15 +55,15 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'full_name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:6',
-            'phone_number' => 'nullable|string|max:20|unique:users,phone_number',
-            'role_id' => 'required|exists:roles,id',
-        ]);
-
         try {
+            $request->validate([
+                'full_name' => 'required|string|max:255',
+                'email' => 'required|string|email|max:255|unique:users',
+                'password' => 'required|string|min:6',
+                'phone_number' => 'nullable|string|max:20|unique:users,phone_number',
+                'role_id' => 'required|exists:roles,id',
+            ]);
+
             User::create([
                 'full_name' => $request->full_name,
                 'email' => $request->email,
@@ -73,6 +73,11 @@ class UserController extends Controller
                 'is_active' => true,
             ]);
             return redirect()->route('admin.users.index')->with('success', 'Thêm người dùng mới thành công!');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            $errorMsg = collect($e->validator->errors()->all())->implode(' ');
+            return redirect()->route('admin.users.index')
+                ->with('error_title', 'Lỗi khi thêm người dùng!')
+                ->with('error', $errorMsg ?: 'Vui lòng kiểm tra lại thông tin nhập vào.');
         } catch (\Exception $e) {
             Log::error("Error creating user: " . $e->getMessage());
             return redirect()->route('admin.users.index')->with('error', 'Có lỗi xảy ra khi thêm người dùng. Vui lòng thử lại.');

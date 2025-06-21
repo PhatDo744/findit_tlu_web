@@ -9,19 +9,23 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
-        body, html {
+        body,
+        html {
             height: 100vh;
             min-height: 100vh;
             background-color: #f8f9fa;
         }
+
         .container-fluid {
             height: 100vh;
             padding: 0;
         }
+
         .row {
             height: 100%;
             margin: 0;
         }
+
         .sidebar {
             background-color: #1c3d72;
             color: #fff;
@@ -29,6 +33,7 @@
             padding-top: 15px;
             overflow-y: auto;
         }
+
         main.position-relative {
             display: flex;
             flex-direction: column;
@@ -36,6 +41,7 @@
             min-height: 0;
             padding: 0 !important;
         }
+
         .top-navbar {
             background-color: #fff;
             border-bottom: 1px solid #dee2e6;
@@ -43,12 +49,14 @@
             height: 70px;
             flex-shrink: 0;
         }
+
         .content-area {
             flex: 1 1 0%;
             min-height: 0;
             overflow-y: auto;
             padding: 24px 18px 18px 18px;
         }
+
         .footer {
             text-align: center;
             padding: 10px 0;
@@ -59,15 +67,16 @@
             width: 100%;
             flex-shrink: 0;
         }
+
         .dashboard-page body {
             height: 100vh;
             overflow: hidden;
         }
-        
+
         .dashboard-page .container-fluid {
             height: 100vh;
         }
-        
+
         .dashboard-page .row {
             height: 100%;
         }
@@ -215,11 +224,13 @@
         }
 
         .flash-message.success {
-            background-color: #28a745; /* Green */
+            background-color: #28a745;
+            /* Green */
         }
 
         .flash-message.error {
-            background-color: #dc3545; /* Red */
+            background-color: #dc3545;
+            /* Red */
         }
 
         .flash-icon {
@@ -254,6 +265,7 @@
             margin-left: 24px;
             cursor: pointer;
         }
+
         .flash-close:hover {
             opacity: 1;
         }
@@ -263,6 +275,7 @@
                 transform: translateX(100%);
                 opacity: 0;
             }
+
             to {
                 transform: translateX(0);
                 opacity: 1;
@@ -283,13 +296,14 @@
                     </a>
                     <div class="admin-panel-text">
                         @if(request()->routeIs('admin.items.show'))
-                            Chi tiết bài đăng
+                        Chi tiết bài đăng
                         @else
-                            Admin Panel
+                        Admin Panel
                         @endif
                     </div>
-                    <hr class="sidebar-divider">  
+                    <hr class="sidebar-divider">
                     <ul class="nav flex-column">
+                        @if(Auth::user()->role_id == 1)
                         <li class="nav-item">
                             <a class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}" href="{{ route('admin.dashboard') }}">
                                 <i class="bi bi-speedometer2"></i> Tổng quan
@@ -310,6 +324,13 @@
                                 <i class="bi bi-people"></i> Quản lý người dùng
                             </a>
                         </li>
+                        @elseif(Auth::user()->role_id == 2)
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('admin.items.*') ? 'active' : '' }}" href="{{ route('admin.items.index') }}">
+                                <i class="bi bi-card-list"></i> Quản lý bài đăng
+                            </a>
+                        </li>
+                        @endif
                     </ul>
                 </div>
             </nav>
@@ -334,10 +355,8 @@
                                 <span style="font-weight:600;color:#333;">{{ Auth::user()->full_name ?? 'Admin' }}</span>
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
-                                <li><a class="dropdown-item" href="#">Thông tin tài khoản</a></li>
-                                <li>
-                                    <hr class="dropdown-divider">
-                                </li>
+
+
                                 <li>
                                     <a class="dropdown-item" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                                         Đăng xuất
