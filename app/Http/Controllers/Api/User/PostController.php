@@ -90,15 +90,26 @@ class PostController extends Controller
             'location_description' => 'required|string|max:500',
             'item_type' => 'required|in:lost,found',
             'date_lost_or_found' => 'required|date',
-            'is_contact_info_public' => 'boolean'
+            'is_contact_info_public' => 'required|accepted',
+            'images'   => 'nullable|array',
+            'images.*' => 'image|mimes:jpeg,png,jpg,webp|max:5120',
         ]);
 
         $validated['user_id'] = $request->user()->id;
-        $validated['status'] = 'pending_approval'; // Needs approval
-        $validated['expiration_date'] = Carbon::now()->addDays(14); // 14 days expiration
-        $validated['is_contact_info_public'] = $validated['is_contact_info_public'] ?? true;
+        $validated['status'] = 'pending_approval';
+        $validated['expiration_date'] = Carbon::now()->addDays(14); // Hết hạn sau 14 ngày
 
         $item = Item::create($validated);
+
+        // Xử lý upload ảnh nếu có
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $imagefile) {
+                $path = $imagefile->store('item-images', 'public');
+                $item->images()->create([
+                    'image_url' => $path,
+                ]);
+            }
+        }
 
         // Gửi thông báo cho user về việc bài đăng đang chờ duyệt
         $request->user()->notify(new \App\Notifications\PostPendingApprovalNotification($item));

@@ -116,8 +116,18 @@ class UserController extends Controller
             $newStatus = (bool)$request->input('is_active');
             $user->is_active = $newStatus;
             $user->save();
-            $action = $newStatus ? 'Mở khóa' : 'Khóa';
-            return redirect()->route('admin.users.index')->with('success', "{$action} tài khoản người dùng '{$user->full_name}' thành công!");
+            
+            if ($newStatus) {
+                $title = 'Mở khóa tài khoản thành công!';
+                $message = "Người dùng '{$user->full_name}' đã có thể truy cập lại hệ thống.";
+            } else {
+                $title = 'Khóa tài khoản thành công!';
+                $message = "Người dùng '{$user->full_name}' đã bị tạm ngưng truy cập.";
+            }
+
+            return redirect()->route('admin.users.index')
+                ->with('success_title', $title)
+                ->with('success', $message);
         } catch (\Exception $e) {
             Log::error("Error updating user status for user ID {$user->id}: " . $e->getMessage());
             return redirect()->route('admin.users.index')->with('error', 'Có lỗi xảy ra khi cập nhật trạng thái người dùng.');
@@ -132,7 +142,9 @@ class UserController extends Controller
         try {
             $userName = $user->full_name;
             $user->delete();
-            return redirect()->route('admin.users.index')->with('success', "Xóa tài khoản người dùng '{$userName}' thành công!");
+            return redirect()->route('admin.users.index')
+                ->with('success_title', 'Xóa tài khoản thành công!')
+                ->with('success', "Tài khoản của người dùng '{$userName}' đã được xóa vĩnh viễn.");
         } catch (\Exception $e) {
             Log::error("Error deleting user ID {$user->id}: " . $e->getMessage());
             return redirect()->route('admin.users.index')->with('error', 'Có lỗi xảy ra khi xóa người dùng.');

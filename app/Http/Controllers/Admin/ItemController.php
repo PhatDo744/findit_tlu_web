@@ -122,28 +122,30 @@ class ItemController extends Controller
             $newStatus = $request->input('status');
             $item->status = $newStatus;
             $message = "";
+            $title = "";
 
             if ($newStatus == 'approved') {
-                $item->admin_comment = null; // Xóa comment cũ nếu có khi duyệt
-                $message = "Duyệt bài đăng '{$item->title}' thành công!";
-            } elseif ($newStatus == 'rejected') {
-                $item->admin_comment = $request->input('admin_comment');
-                $message = "Từ chối bài đăng '{$item->title}' thành công!";
-            }
-
-            $item->save();
-            // Gửi thông báo cho người dùng về việc bài đăng được duyệt/từ chối
-            if ($newStatus == 'approved') {
+                $item->admin_comment = null;
+                $title = "Duyệt bài thành công!";
+                $message = "Bài đăng đã được duyệt và sẽ được hiển thị công khai.";
                 $item->user->notify(new \App\Notifications\PostApprovedNotification($item));
             } elseif ($newStatus == 'rejected') {
+                $item->admin_comment = $request->input('admin_comment');
+                $title = "Từ chối bài thành công!";
+                $message = "Bài đăng đã bị từ chối và người dùng sẽ nhận được thông báo.";
                 $item->user->notify(new \App\Notifications\PostRejectedNotification($item, $item->admin_comment));
             }
 
-            // Kiểm tra xem request đến từ trang show hay index để redirect về đúng chỗ
+            $item->save();
+            
+            $redirectResponse = redirect();
             if (url()->previous() == route('admin.items.show', $item->id)) {
-                return redirect()->route('admin.items.show', $item->id)->with('success', $message);
+                $redirectResponse = $redirectResponse->route('admin.items.show', $item->id);
+            } else {
+                $redirectResponse = $redirectResponse->route('admin.items.index');
             }
-            return redirect()->route('admin.items.index')->with('success', $message);
+            return $redirectResponse->with('success_title', $title)->with('success', $message);
+
         } catch (\Exception $e) {
             Log::error("Error updating item status for item ID {$item->id}: " . $e->getMessage());
             if (url()->previous() == route('admin.items.show', $item->id)) {
@@ -163,7 +165,9 @@ class ItemController extends Controller
             // TODO: Xóa ảnh liên quan trong storage nếu có
             // foreach ($item->images as $image) { Storage::delete($image->image_url_path_relative_to_storage_disk); }
             $item->delete(); // Sử dụng soft delete nếu model Item dùng SoftDeletes trait
-            return redirect()->route('admin.items.index')->with('success', "Xóa bài đăng '{$itemTitle}' thành công!");
+            return redirect()->route('admin.items.index')
+                ->with('success_title', 'Xóa bài thành công!')
+                ->with('success', "Bài đăng đã được xóa vĩnh viễn khỏi hệ thống.");
         } catch (\Exception $e) {
             Log::error("Error deleting item ID {$item->id}: " . $e->getMessage());
             return redirect()->route('admin.items.index')->with('error', 'Có lỗi xảy ra khi xóa bài đăng.');
