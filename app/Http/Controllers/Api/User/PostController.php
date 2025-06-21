@@ -133,25 +133,21 @@ class PostController extends Controller
         $item = $request->user()->items()->findOrFail($id);
 
         $validated = $request->validate([
-            'category_id' => 'sometimes|exists:categories,id',
-            'title' => 'sometimes|string|max:255',
-            'description' => 'sometimes|string',
-            'location_description' => 'sometimes|string|max:500',
-            'date_lost_or_found' => 'sometimes|date',
+            'category_id' => 'sometimes|required|exists:categories,id',
+            'title' => 'sometimes|required|string|max:255',
+            'description' => 'sometimes|required|string',
+            'location_description' => 'sometimes|required|string|max:500',
+            'date_lost_or_found' => 'sometimes|required|date',
             'is_contact_info_public' => 'sometimes|boolean'
         ]);
 
-        // Ép status về pending_approval nếu không phải returned
-        if ($item->status !== 'returned') {
-            $validated['status'] = 'pending_approval';
-        }
+        // Ghi đè trạng thái về chờ duyệt
+        $validated['status'] = 'pending_approval';
 
         $item->update($validated);
 
-        // Gửi notification nếu chuyển về pending_approval
-        if (isset($validated['status']) && $validated['status'] === 'pending_approval') {
-            $request->user()->notify(new \App\Notifications\PostPendingApprovalNotification($item));
-        }
+        // Gửi thông báo cho user về việc bài đăng đang chờ duyệt lại
+        $request->user()->notify(new \App\Notifications\PostPendingApprovalNotification($item));
 
         return response()->json([
             'post' => $item->load(['category', 'images'])
