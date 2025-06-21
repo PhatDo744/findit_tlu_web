@@ -126,6 +126,7 @@
             <thead style="background-color:#1c3d72; color: white;">
                 <tr>
                     <th style="padding: 16px;">#</th>
+                    <th style="padding: 16px;">HÌNH ẢNH</th>
                     <th style="padding: 16px;">TÊN</th>
                     <th style="padding: 16px;">EMAIL</th>
                     <th style="padding: 16px;">SỐ ĐIỆN THOẠI</th>
@@ -140,6 +141,9 @@
                 @forelse ($users as $user)
                 <tr>
                     <td class=" text-center align-middle">{{ $user->id }}</td>
+                    <td class="text-center align-middle">
+                        <img src="{{ $user->photo_url ?? '/images/default_avatar.png' }}" alt="avatar" class="user-avatar">
+                    </td>
                     <td class="text-center align-middle">
                         {{ $user->full_name }}
                     </td>
@@ -185,7 +189,7 @@
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="8" class="text-center">Không tìm thấy người dùng nào.</td>
+                    <td colspan="9" class="text-center">Không tìm thấy người dùng nào.</td>
                 </tr>
                 @endforelse
             </tbody>
@@ -463,24 +467,7 @@
                             </div>
                             <div class="d-flex mb-0 small text-secondary">
                                 <span class="me-auto text-dark">Số bài đăng:</span>
-                                <span class="text-end text-dark fw-medium" id="                                // ...existing code...
-                                // Xử lý modal xóa tài khoản
-                                const deleteUserModal = document.getElementById('deleteUserModal');
-                                if (deleteUserModal) {
-                                    deleteUserModal.addEventListener('show.bs.modal', function(event) {
-                                        const button = event.relatedTarget;
-                                        const userId = button.getAttribute('data-user-id');
-                                        const userName = button.getAttribute('data-user-name');
-                                        const userEmail = button.getAttribute('data-user-email');
-                                        const userPostCount = button.getAttribute('data-user-post-count');
-                                        const form = deleteUserModal.querySelector('#deleteUserForm');
-                                        form.action = `{{ url('admin/users') }}/${userId}`;
-                                        deleteUserModal.querySelector('#deleteUserName').textContent = userName;
-                                        deleteUserModal.querySelector('#deleteUserEmail').textContent = userEmail;
-                                        deleteUserModal.querySelector('#deleteUserPostCount').textContent = userPostCount + ' bài đăng';
-                                    });
-                                }
-                                // ...existing code...">2 bài đăng</span> {{-- Dynamic content --}}
+                                <span class="text-end text-dark fw-medium" id="deleteUserPostCount">2 bài đăng</span> {{-- Dynamic content --}}
                             </div>
                         </div>
                     </div>

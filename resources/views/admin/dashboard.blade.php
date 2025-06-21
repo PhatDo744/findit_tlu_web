@@ -436,7 +436,7 @@ document.body.classList.add('dashboard-page');
                             </tbody>
                         </table>
                     </div>
-                        <a href="#" class="see-all-link">
+                        <a href="{{ route('admin.items.index') }}" class="see-all-link">
                             Xem tất cả bài đăng <i class="bi bi-arrow-right"></i>
                         </a>
                 </div>
@@ -475,7 +475,7 @@ document.body.classList.add('dashboard-page');
                                 @endif
                     </ul>
                         </div>
-                        <a href="#" class="see-all-link">
+                        <a href="{{ route('admin.users.index') }}" class="see-all-link">
                             Xem tất cả người dùng <i class="bi bi-arrow-right"></i>
                         </a>
                     </div>

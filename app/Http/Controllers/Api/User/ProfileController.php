@@ -20,7 +20,7 @@ class ProfileController extends Controller
             'full_name' => $user->full_name,
             'email' => $user->email,
             'phone_number' => $user->phone_number,
-            'photo_url' => $user->photo_url ? Storage::url($user->photo_url) : null,
+            'photo_url' => $user->photo_url,
             'created_at' => $user->created_at,
             'role' => [
                 'id' => $user->role->id,
@@ -49,7 +49,7 @@ class ProfileController extends Controller
                 'full_name' => $user->full_name,
                 'email' => $user->email,
                 'phone_number' => $user->phone_number,
-                'photo_url' => $user->photo_url ? Storage::url($user->photo_url) : null
+                'photo_url' => $user->photo_url
             ]
         ]);
     }
@@ -67,7 +67,7 @@ class ProfileController extends Controller
         
         // Delete old avatar if exists
         if ($user->photo_url) {
-            Storage::disk('public')->delete($user->photo_url);
+            \Storage::disk('public')->delete($user->photo_url);
         }
         
         // Store new avatar
@@ -80,7 +80,7 @@ class ProfileController extends Controller
                 'full_name' => $user->full_name,
                 'email' => $user->email,
                 'phone_number' => $user->phone_number,
-                'photo_url' => Storage::url($path)
+                'photo_url' => $user->photo_url
             ]
         ]);
     }

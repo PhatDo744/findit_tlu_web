@@ -305,7 +305,11 @@
             <div class="info-card">
                 <h3>Thông tin người đăng</h3>
                 <div class="user-profile">
-                    <div class="user-profile-avatar">{{ strtoupper(mb_substr($item->user->full_name ?? 'A', 0, 1)) }}</div>
+                    @if($item->user->photo_url)
+                        <img src="{{ $item->user->photo_url }}" alt="avatar" class="user-avatar" style="width:40px;height:40px;border-radius:50%;object-fit:cover;margin-right:12px;">
+                    @else
+                        <div class="user-profile-avatar">{{ strtoupper(mb_substr($item->user->full_name ?? 'A', 0, 1)) }}</div>
+                    @endif
                     <div class="user-profile-info">
                         <h4>{{ $item->user->full_name ?? 'N/A' }}</h4>
                         <p>{{ $item->user->email ?? '' }}</p>

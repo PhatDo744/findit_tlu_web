@@ -36,4 +36,13 @@ class User extends Authenticatable
     }
 
     // Notifications relationship đã có sẵn từ trait Notifiable
+
+    public function getPhotoUrlAttribute($value)
+    {
+        if (!$value) return null;
+        // Nếu đã là URL thì trả về luôn
+        if (str_starts_with($value, 'http')) return $value;
+        // Nếu là đường dẫn tương đối thì build thành URL public
+        return asset('storage/' . ltrim($value, '/'));
+    }
 }
