@@ -199,7 +199,7 @@
 <div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="addUserModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <form action="{{ route('admin.users.store') }}" method="POST">
+            <form id="addUserForm" action="{{ route('admin.users.store') }}" method="POST">
                 @csrf
                 <div class="modal-header">
                     <div> {{-- Group title and subtitle --}}
@@ -209,26 +209,72 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body pb-0"> {{-- pb-0 to reduce bottom padding --}}
+                    {{-- Error Alert --}}
+                    <div class="alert alert-danger d-none" id="addUserErrorAlert">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        <span id="addUserErrorMessage"></span>
+                    </div>
+                    
                     <div class="mb-3">
                         <label for="full_name" class="form-label fw-bold text-dark">Tên người dùng <span class="text-danger">*</span></label>
                         <input type="text" class="form-control" id="full_name" name="full_name" placeholder="Nhập tên đầy đủ..." required>
+                        <div class="invalid-feedback" id="full_name_error"></div>
                     </div>
                     <div class="mb-3">
-                        <label for="email" class="form-label fw-bold text-dark">Email <span class="text-danger">*</span></label>
-                        <input type="email" class="form-control" id="email" name="email" placeholder="example@tlu.edu.vn" required>
+                        <label for="email" class="form-label fw-bold text-dark">
+                            Email <span class="text-danger">*</span>
+                            <i class="fas fa-question-circle text-info ms-1" 
+                               data-bs-toggle="tooltip" 
+                               data-bs-placement="top" 
+                               title="Chỉ chấp nhận email có đuôi @e.tlu.edu.vn hoặc @tlu.edu.vn"></i>
+                        </label>
+                        <input type="email" class="form-control" id="email" name="email" placeholder="example@e.tlu.edu.vn hoặc example@tlu.edu.vn" required>
+                        <div class="form-text small text-muted">Chỉ chấp nhận email có đuôi @e.tlu.edu.vn hoặc @tlu.edu.vn</div>
+                        <div class="invalid-feedback" id="email_error"></div>
                     </div>
                     <div class="mb-3">
-                        <label for="phone_number" class="form-label fw-bold text-dark">Số điện thoại</label>
-                        <input type="text" class="form-control" id="phone_number" name="phone_number" placeholder="Nhập số điện thoại...">
+                        <label for="phone_number" class="form-label fw-bold text-dark">
+                            Số điện thoại
+                            <i class="fas fa-question-circle text-info ms-1" 
+                               data-bs-toggle="tooltip" 
+                               data-bs-placement="top" 
+                               title="Chỉ chấp nhận số điện thoại Việt Nam với đầu số: 03, 05, 07, 08, 09"></i>
+                        </label>
+                        <input type="tel" class="form-control" id="phone_number" name="phone_number" placeholder="VD: 0987654321, 0912345678, +84987654321">
+                        <div class="form-text small text-muted">Nhập số điện thoại Việt Nam (đầu số: 03, 05, 07, 08, 09)</div>
+                        <div class="invalid-feedback" id="phone_number_error"></div>
                     </div>
                     <div class="mb-3">
-                        <label for="password" class="form-label fw-bold text-dark">Mật khẩu <span class="text-danger">*</span></label>
+                        <label for="password" class="form-label fw-bold text-dark">
+                            Mật khẩu <span class="text-danger">*</span>
+                            <i class="fas fa-question-circle text-info ms-1" 
+                               data-bs-toggle="tooltip" 
+                               data-bs-placement="top" 
+                               title="Mật khẩu phải có ít nhất 8 ký tự, bao gồm chữ hoa, chữ thường, số và ký tự đặc biệt (@$!%*?&)"></i>
+                        </label>
                         <div class="input-group"> {{-- For eye icon --}}
                             <input type="password" class="form-control" id="password" name="password" placeholder="Nhập mật khẩu..." required>
                             <button class="btn btn-outline-secondary" type="button" id="togglePassword">
                                 <i class="fas fa-eye-slash"></i> {{-- Eye icon for visibility toggle --}}
                             </button>
+                            <button class="btn btn-outline-info" type="button" id="generatePassword" title="Tạo mật khẩu ngẫu nhiên">
+                                <i class="fas fa-dice"></i>
+                            </button>
                         </div>
+                        <div class="form-text small text-muted">
+                            <strong>Yêu cầu mật khẩu:</strong>
+                            <ul class="mb-0 mt-1 ps-3">
+                                <li id="length-check" class="text-muted"><i class="fas fa-circle text-muted"></i> Ít nhất 8 ký tự</li>
+                                <li id="lowercase-check" class="text-muted"><i class="fas fa-circle text-muted"></i> Ít nhất 1 chữ thường</li>
+                                <li id="uppercase-check" class="text-muted"><i class="fas fa-circle text-muted"></i> Ít nhất 1 chữ hoa</li>
+                                <li id="number-check" class="text-muted"><i class="fas fa-circle text-muted"></i> Ít nhất 1 số</li>
+                                <li id="special-check" class="text-muted"><i class="fas fa-circle text-muted"></i> Ít nhất 1 ký tự đặc biệt (@$!%*?&)</li>
+                            </ul>
+                            <div class="mt-2">
+                                <strong>Ví dụ mật khẩu mạnh:</strong> <code>TLU@2024</code>, <code>FindIt@TLU</code>, <code>Student@123</code>
+                            </div>
+                        </div>
+                        <div class="invalid-feedback" id="password_error"></div>
                     </div>
                     <div class="mb-3">
                         <label for="role_id" class="form-label fw-bold text-dark">Vai trò</label>
@@ -238,6 +284,7 @@
                             <option value="{{ $role->id }}" {{ $role->name == 'App Mobile User' ? 'selected' : '' }}>{{ $role->name }}</option>
                             @endforeach
                         </select>
+                        <div class="invalid-feedback" id="role_id_error"></div>
                     </div>
 
                     {{-- Important Information Section (Blue Box) --}}
@@ -246,6 +293,9 @@
                         <div>
                             <h6 class="alert-heading fw-bold mb-2">Thông tin quan trọng</h6>
                             <ul class="mb-0 ps-3 small">
+                                <li><strong>Email bắt buộc:</strong> Chỉ chấp nhận email có đuôi @e.tlu.edu.vn hoặc @tlu.edu.vn</li>
+                                <li><strong>Mật khẩu mạnh:</strong> Phải có ít nhất 8 ký tự, bao gồm chữ hoa, chữ thường, số và ký tự đặc biệt</li>
+                                <li><strong>Số điện thoại:</strong> Chỉ chấp nhận số điện thoại Việt Nam (đầu số: 03, 05, 07, 08, 09)</li>
                                 <li>Người dùng sẽ nhận email kích hoạt tài khoản</li>
                                 <li>Mật khẩu tạm thời sẽ được gửi qua email</li>
                                 <li>Tài khoản sẽ ở trạng thái hoạt động sau khi tạo</li>
@@ -258,7 +308,10 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy bỏ</button>
-                    <button type="submit" class="btn btn-primary">Tạo tài khoản</button>
+                    <button type="submit" class="btn btn-primary" id="addUserSubmitBtn">
+                        <span class="spinner-border spinner-border-sm d-none me-2" id="addUserSpinner"></span>
+                        Tạo tài khoản
+                    </button>
                 </div>
             </form>
         </div>
@@ -268,6 +321,12 @@
 {{-- JavaScript for password toggle --}}
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        // Khởi tạo tooltips
+        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        const tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+
         const togglePassword = document.getElementById('togglePassword');
         const password = document.getElementById('password');
 
@@ -281,6 +340,281 @@
                 this.querySelector('i').classList.toggle('fa-eye');
                 this.querySelector('i').classList.toggle('fa-eye-slash');
             });
+        }
+
+        // Tạo mật khẩu ngẫu nhiên
+        const generatePasswordBtn = document.getElementById('generatePassword');
+        if (generatePasswordBtn) {
+            generatePasswordBtn.addEventListener('click', function() {
+                const generatedPassword = generateStrongPassword();
+                password.value = generatedPassword;
+                password.setAttribute('type', 'text'); // Hiển thị mật khẩu
+                
+                // Cập nhật icon eye
+                const eyeIcon = togglePassword.querySelector('i');
+                eyeIcon.classList.remove('fa-eye-slash');
+                eyeIcon.classList.add('fa-eye');
+                
+                // Validate mật khẩu mới
+                validatePassword(generatedPassword);
+                
+                // Focus vào input
+                password.focus();
+            });
+        }
+
+        function generateStrongPassword() {
+            const lowercase = 'abcdefghijklmnopqrstuvwxyz';
+            const uppercase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            const numbers = '0123456789';
+            const special = '@$!%*?&';
+            
+            let password = '';
+            
+            // Đảm bảo có ít nhất 1 ký tự từ mỗi loại
+            password += lowercase.charAt(Math.floor(Math.random() * lowercase.length));
+            password += uppercase.charAt(Math.floor(Math.random() * uppercase.length));
+            password += numbers.charAt(Math.floor(Math.random() * numbers.length));
+            password += special.charAt(Math.floor(Math.random() * special.length));
+            
+            // Thêm các ký tự ngẫu nhiên để đủ 8 ký tự
+            const allChars = lowercase + uppercase + numbers + special;
+            for (let i = 4; i < 12; i++) {
+                password += allChars.charAt(Math.floor(Math.random() * allChars.length));
+            }
+            
+            // Xáo trộn mật khẩu
+            return password.split('').sort(() => Math.random() - 0.5).join('');
+        }
+
+        // Real-time password validation
+        const passwordInput = document.getElementById('password');
+        if (passwordInput) {
+            passwordInput.addEventListener('input', function() {
+                validatePassword(this.value);
+            });
+        }
+
+        // Real-time phone number validation
+        const phoneInput = document.getElementById('phone_number');
+        if (phoneInput) {
+            phoneInput.addEventListener('input', function() {
+                validatePhoneNumber(this.value);
+            });
+        }
+
+        function validatePassword(password) {
+            const checks = {
+                length: password.length >= 8,
+                lowercase: /[a-z]/.test(password),
+                uppercase: /[A-Z]/.test(password),
+                number: /\d/.test(password),
+                special: /[@$!%*?&]/.test(password)
+            };
+
+            // Update UI for each check
+            updateCheckUI('length-check', checks.length);
+            updateCheckUI('lowercase-check', checks.lowercase);
+            updateCheckUI('uppercase-check', checks.uppercase);
+            updateCheckUI('number-check', checks.number);
+            updateCheckUI('special-check', checks.special);
+        }
+
+        function validatePhoneNumber(phone) {
+            if (!phone) {
+                // Nếu trống thì không validate
+                phoneInput.classList.remove('is-valid', 'is-invalid');
+                return;
+            }
+
+            // Loại bỏ khoảng trắng và ký tự đặc biệt
+            const cleanPhone = phone.replace(/[^0-9+]/g, '');
+            
+            // Định nghĩa các đầu số hợp lệ của các nhà mạng Việt Nam
+            const validPrefixes = [
+                // Viettel
+                '03', '05', '07', '08', '09',
+                // MobiFone
+                '07', '08', '09',
+                // Vinaphone
+                '03', '05', '08', '09',
+                // Vietnamobile
+                '05', '08',
+                // Gmobile
+                '05', '08',
+                // Itelecom
+                '08'
+            ];
+            
+            // Kiểm tra format số điện thoại Việt Nam
+            const patterns = [
+                /^0[3-9][0-9]{8}$/, // Format nội địa: 0xx xxxx xxx
+                /^\+84[3-9][0-9]{8}$/, // Format quốc tế: +84xx xxxx xxx
+                /^84[3-9][0-9]{8}$/ // Format quốc tế: 84xx xxxx xxx
+            ];
+            
+            let isValid = false;
+            for (const pattern of patterns) {
+                if (pattern.test(cleanPhone)) {
+                    // Kiểm tra thêm đầu số có hợp lệ không
+                    if (cleanPhone.startsWith('0')) {
+                        const prefix = cleanPhone.substring(0, 2);
+                        if (validPrefixes.includes(prefix)) {
+                            isValid = true;
+                            break;
+                        }
+                    } else if (cleanPhone.startsWith('+84')) {
+                        const prefix = cleanPhone.substring(3, 5);
+                        if (validPrefixes.includes(prefix)) {
+                            isValid = true;
+                            break;
+                        }
+                    } else if (cleanPhone.startsWith('84')) {
+                        const prefix = cleanPhone.substring(2, 4);
+                        if (validPrefixes.includes(prefix)) {
+                            isValid = true;
+                            break;
+                        }
+                    }
+                }
+            }
+            
+            if (isValid) {
+                phoneInput.classList.remove('is-invalid');
+                phoneInput.classList.add('is-valid');
+            } else {
+                phoneInput.classList.remove('is-valid');
+                phoneInput.classList.add('is-invalid');
+            }
+        }
+
+        function updateCheckUI(elementId, isValid) {
+            const element = document.getElementById(elementId);
+            if (element) {
+                const icon = element.querySelector('i');
+                if (isValid) {
+                    element.classList.remove('text-muted');
+                    element.classList.add('text-success');
+                    icon.classList.remove('fa-circle', 'text-muted');
+                    icon.classList.add('fa-check-circle', 'text-success');
+                } else {
+                    element.classList.remove('text-success');
+                    element.classList.add('text-muted');
+                    icon.classList.remove('fa-check-circle', 'text-success');
+                    icon.classList.add('fa-circle', 'text-muted');
+                }
+            }
+        }
+
+        // Xử lý form thêm người dùng với AJAX
+        const addUserForm = document.getElementById('addUserForm');
+        if (addUserForm) {
+            addUserForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+                
+                // Reset validation states
+                clearValidationErrors();
+                hideErrorAlert();
+                
+                // Show loading state
+                const submitBtn = document.getElementById('addUserSubmitBtn');
+                const spinner = document.getElementById('addUserSpinner');
+                submitBtn.disabled = true;
+                spinner.classList.remove('d-none');
+                
+                // Get form data
+                const formData = new FormData(this);
+                
+                // Send AJAX request
+                fetch(this.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success === false) {
+                        // Handle validation errors
+                        if (data.errors) {
+                            showValidationErrors(data.errors);
+                        } else {
+                            showErrorAlert(data.message);
+                        }
+                    } else {
+                        // Success - redirect to refresh the page
+                        window.location.reload();
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showErrorAlert('Có lỗi xảy ra khi thêm người dùng. Vui lòng thử lại.');
+                })
+                .finally(() => {
+                    // Reset loading state
+                    submitBtn.disabled = false;
+                    spinner.classList.add('d-none');
+                });
+            });
+        }
+
+        // Reset form when modal is closed
+        const addUserModal = document.getElementById('addUserModal');
+        if (addUserModal) {
+            addUserModal.addEventListener('hidden.bs.modal', function() {
+                const form = this.querySelector('#addUserForm');
+                form.reset();
+                clearValidationErrors();
+                hideErrorAlert();
+            });
+        }
+
+        // Helper functions
+        function clearValidationErrors() {
+            const inputs = addUserForm.querySelectorAll('.form-control, .form-select');
+            inputs.forEach(input => {
+                input.classList.remove('is-invalid');
+            });
+            
+            const errorDivs = addUserForm.querySelectorAll('.invalid-feedback');
+            errorDivs.forEach(div => {
+                div.textContent = '';
+            });
+        }
+
+        function showValidationErrors(errors) {
+            Object.keys(errors).forEach(field => {
+                const input = addUserForm.querySelector(`[name="${field}"]`);
+                const errorDiv = addUserForm.querySelector(`#${field}_error`);
+                
+                if (input && errorDiv) {
+                    input.classList.add('is-invalid');
+                    errorDiv.textContent = errors[field][0];
+                }
+            });
+        }
+
+        function showErrorAlert(message) {
+            const alert = document.getElementById('addUserErrorAlert');
+            const messageSpan = document.getElementById('addUserErrorMessage');
+            
+            if (alert && messageSpan) {
+                messageSpan.textContent = message;
+                alert.classList.remove('d-none');
+                
+                // Scroll to top of modal body
+                const modalBody = addUserModal.querySelector('.modal-body');
+                modalBody.scrollTop = 0;
+            }
+        }
+
+        function hideErrorAlert() {
+            const alert = document.getElementById('addUserErrorAlert');
+            if (alert) {
+                alert.classList.add('d-none');
+            }
         }
     });
 </script>
@@ -466,8 +800,11 @@
                         <label for="confirm_delete_user_input" class="form-label fw-bold text-dark mb-2 d-flex align-items-center small">
                             <i class="fas fa-exclamation-circle me-2 text-warning"></i> Xác nhận xóa
                         </label>
-                        <p class="text-secondary small mb-2">Để xác nhận xóa, vui lòng nhập "XÓA" vào ô bên dưới:</p>
-                        <input type="text" class="form-control border-warning-subtle" id="confirm_delete_user_input" placeholder="Nhập &quot;XÓA&quot; để xác nhận" required>
+                        <p class="text-secondary small mb-2">Để xác nhận xóa, vui lòng nhập "xóa" vào ô bên dưới:</p>
+                        <input type="text" class="form-control border-warning-subtle" id="confirm_delete_user_input" name="confirm_delete_input" placeholder="Nhập &quot;xóa&quot; để xác nhận" required>
+                        <div class="invalid-feedback" id="confirm_delete_feedback">
+                            Vui lòng nhập chính xác chữ "xóa" để xác nhận.
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -534,9 +871,53 @@
                 const button = event.relatedTarget;
                 const userId = button.getAttribute('data-user-id');
                 const userName = button.getAttribute('data-user-name');
+                const userEmail = button.getAttribute('data-user-email');
+                const userPostCount = button.getAttribute('data-user-post-count');
                 const form = deleteUserModal.querySelector('#deleteUserForm');
                 form.action = `{{ url('admin/users') }}/${userId}`;
                 deleteUserModal.querySelector('#deleteUserName').textContent = userName;
+                deleteUserModal.querySelector('#deleteUserEmail').textContent = userEmail;
+                deleteUserModal.querySelector('#deleteUserPostCount').textContent = userPostCount + ' bài đăng';
+                
+                // Reset form và validation khi mở modal
+                const confirmInput = deleteUserModal.querySelector('#confirm_delete_user_input');
+                confirmInput.value = '';
+                confirmInput.classList.remove('is-invalid');
+            });
+
+            // Xử lý validation khi submit form
+            const deleteUserForm = deleteUserModal.querySelector('#deleteUserForm');
+            deleteUserForm.addEventListener('submit', function(event) {
+                const confirmInput = deleteUserModal.querySelector('#confirm_delete_user_input');
+                const inputValue = confirmInput.value.trim();
+                
+                // Chuẩn hóa chuỗi nhập vào (loại bỏ dấu câu, chuyển về chữ thường)
+                const normalizedInput = inputValue.toLowerCase().replace(/[^\w\s]/g, '');
+                const expectedValue = 'xoa'; // Giá trị mong đợi sau khi chuẩn hóa
+                
+                if (normalizedInput !== expectedValue) {
+                    event.preventDefault();
+                    confirmInput.classList.add('is-invalid');
+                    confirmInput.focus();
+                    return false;
+                }
+                
+                // Nếu validation pass, remove invalid class
+                confirmInput.classList.remove('is-invalid');
+            });
+
+            // Xử lý validation real-time khi người dùng nhập
+            const confirmInput = deleteUserModal.querySelector('#confirm_delete_user_input');
+            confirmInput.addEventListener('input', function() {
+                const inputValue = this.value.trim();
+                const normalizedInput = inputValue.toLowerCase().replace(/[^\w\s]/g, '');
+                const expectedValue = 'xoa';
+                
+                if (inputValue && normalizedInput !== expectedValue) {
+                    this.classList.add('is-invalid');
+                } else {
+                    this.classList.remove('is-invalid');
+                }
             });
         }
     });
