@@ -158,16 +158,28 @@ class ItemController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Item $item)
+    public function destroy(Request $request, Item $item)
     {
+        $request->validate([
+            'admin_delete_comment' => 'required|string|max:1000',
+        ], [
+            'admin_delete_comment.required' => 'Vui lòng nhập lý do xóa bài đăng.'
+        ]);
+
         try {
             $itemTitle = $item->title;
+            $deleteReason = $request->input('admin_delete_comment');
+            
+            // Gửi thông báo cho user về việc bài đăng bị xóa
+            $item->user->notify(new \App\Notifications\PostDeletedNotification($item, $deleteReason));
+            
             // TODO: Xóa ảnh liên quan trong storage nếu có
             // foreach ($item->images as $image) { Storage::delete($image->image_url_path_relative_to_storage_disk); }
             $item->delete(); // Sử dụng soft delete nếu model Item dùng SoftDeletes trait
+            
             return redirect()->route('admin.items.index')
                 ->with('success_title', 'Xóa bài thành công!')
-                ->with('success', "Bài đăng đã được xóa vĩnh viễn khỏi hệ thống.");
+                ->with('success', "Bài đăng đã được xóa vĩnh viễn khỏi hệ thống và người dùng đã nhận được thông báo.");
         } catch (\Exception $e) {
             Log::error("Error deleting item ID {$item->id}: " . $e->getMessage());
             return redirect()->route('admin.items.index')->with('error', 'Có lỗi xảy ra khi xóa bài đăng.');

@@ -229,6 +229,11 @@
         <div class="post-meta">
             <div>Ngày đăng: {{ $item->created_at->format('d/m/Y H:i') }}</div>
             <div>ID: A{{ $item->id }}</div>
+            <div class="mt-2">
+                <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteItemModal" data-item-id="{{ $item->id }}" data-item-title="{{ $item->title }}">
+                    <i class="fas fa-trash"></i> Xóa bài đăng
+                </button>
+            </div>
         </div>
     </div>
     <div class="main-grid">
@@ -347,4 +352,75 @@
         </div>
     </div>
 </div>
+
+<!-- Modal Xác nhận Xóa -->
+<div class="modal fade" id="deleteItemModal" tabindex="-1" aria-labelledby="deleteItemModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="deleteItemForm" method="POST" action="">
+                @csrf
+                @method('DELETE')
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteItemModalLabel">Xác nhận xóa bài đăng</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-warning">
+                        <h6><i class="fas fa-exclamation-triangle"></i> Cảnh báo!</h6>
+                        <ul class="mb-0">
+                            <li>Bài đăng sẽ bị xóa vĩnh viễn khỏi hệ thống</li>
+                            <li>Tất cả hình ảnh và dữ liệu liên quan sẽ bị xóa</li>
+                            <li>Người dùng sẽ nhận được thông báo về việc xóa</li>
+                            <li>Không thể khôi phục sau khi xóa</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-4 text-end"><strong>Tiêu đề:</strong></div>
+                        <div class="col-8"><span id="deleteItemTitle"></span></div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="admin_delete_comment" class="form-label fw-bold text-dark mb-2 d-flex align-items-center small">
+                            <i class="fas fa-comment-alt me-2 text-secondary"></i> Lý do xóa bài đăng (bắt buộc):
+                        </label>
+                        <textarea class="form-control border-warning-subtle" id="admin_delete_comment" name="admin_delete_comment" rows="3" placeholder="Nhập lý do xóa bài đăng (bắt buộc)..." required></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="submit" class="btn btn-danger">Xóa bài đăng</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 @endsection
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Xử lý modal xóa bài đăng
+    const deleteItemModal = document.getElementById('deleteItemModal');
+    if (deleteItemModal) {
+        deleteItemModal.addEventListener('show.bs.modal', function(event) {
+            const button = event.relatedTarget;
+            const itemId = button.getAttribute('data-item-id');
+            const itemTitle = button.getAttribute('data-item-title');
+            
+            const form = deleteItemModal.querySelector('#deleteItemForm');
+            form.action = `/admin/items/${itemId}`;
+            
+            deleteItemModal.querySelector('#deleteItemTitle').textContent = itemTitle;
+        });
+        
+        // Clear delete reason when modal is hidden
+        deleteItemModal.addEventListener('hidden.bs.modal', function() {
+            const textarea = deleteItemModal.querySelector('#admin_delete_comment');
+            textarea.value = '';
+        });
+    }
+});
+</script>
+@endpush
