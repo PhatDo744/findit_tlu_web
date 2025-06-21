@@ -190,9 +190,83 @@
         .sidebar-divider {
             border: none;
             border-top: 2px solid rgba(255, 255, 255, 0.2);
-            /* Màu trắng mờ */
             margin: 15px 0;
-            /* Khoảng cách trên và dưới */
+        }
+
+        /* Custom Flash Message Styles */
+        .flash-message-container {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 1050;
+            width: auto;
+            max-width: 400px;
+        }
+
+        .flash-message {
+            display: flex;
+            align-items: flex-start;
+            padding: 16px;
+            margin-bottom: 1rem;
+            border-radius: 8px;
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            animation: slideInRight 0.3s ease-out;
+        }
+
+        .flash-message.success {
+            background-color: #28a745; /* Green */
+        }
+
+        .flash-message.error {
+            background-color: #dc3545; /* Red */
+        }
+
+        .flash-icon {
+            font-size: 24px;
+            margin-right: 16px;
+            flex-shrink: 0;
+        }
+
+        .flash-content {
+            flex-grow: 1;
+        }
+
+        .flash-title {
+            font-weight: 700;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .flash-text {
+            margin: 0;
+            font-size: 0.95rem;
+            line-height: 1.4;
+        }
+
+        .flash-close {
+            background: none;
+            border: none;
+            color: inherit;
+            font-size: 20px;
+            opacity: 0.8;
+            padding: 0;
+            margin-left: 24px;
+            cursor: pointer;
+        }
+        .flash-close:hover {
+            opacity: 1;
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
         }
     </style>
     @stack('styles')
@@ -277,9 +351,44 @@
                     </div>
                 </nav>
 
+                <!-- Flash Message Area -->
+                <div class="flash-message-container">
+                    @if (session('success'))
+                    <div class="flash-message success" role="alert">
+                        <div class="flash-icon">
+                            <i class="fa-solid fa-circle-check"></i>
+                        </div>
+                        <div class="flash-content">
+                            <strong class="flash-title">{{ session('success_title', 'Thành công!') }}</strong>
+                            <p class="flash-text">{{ session('success') }}</p>
+                        </div>
+                        <button type="button" class="flash-close" data-dismiss="alert" aria-label="Close">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                    </div>
+                    @endif
+
+                    @if (session('error'))
+                    <div class="flash-message error" role="alert">
+                        <div class="flash-icon">
+                            <i class="fa-solid fa-circle-xmark"></i>
+                        </div>
+                        <div class="flash-content">
+                            <strong class="flash-title">{{ session('error_title', 'Lỗi!') }}</strong>
+                            <p class="flash-text">{{ session('error') }}</p>
+                        </div>
+                        <button type="button" class="flash-close" data-dismiss="alert" aria-label="Close">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                    </div>
+                    @endif
+                </div>
+
                 <!-- Page Content -->
                 <div class="content-area">
-                    @yield('content')
+                    <div class="container-fluid">
+                        @yield('content')
+                    </div>
                 </div>
 
                 <!-- Footer -->
@@ -292,14 +401,53 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Sidebar toggler for mobile
-        const sidebarToggler = document.getElementById('sidebarToggler');
-        const sidebar = document.getElementById('sidebar');
-        if (sidebarToggler && sidebar) {
-            sidebarToggler.addEventListener('click', () => {
-                sidebar.classList.toggle('active');
+        document.addEventListener('DOMContentLoaded', function() {
+            const flashMessages = document.querySelectorAll('.flash-message');
+
+            // --- NEW: Ensure only the latest message is shown ---
+            if (flashMessages.length > 1) {
+                for (let i = 0; i < flashMessages.length - 1; i++) {
+                    flashMessages[i].style.display = 'none';
+                }
+            }
+
+            // Find the single visible message
+            const activeMessage = Array.from(flashMessages).find(el => el.style.display !== 'none');
+
+            // Helper function for a smooth fade-out effect
+            function fadeOut(element) {
+                if (!element) return;
+                element.style.transition = 'opacity 0.4s ease-out';
+                element.style.opacity = '0';
+                setTimeout(() => {
+                    element.style.display = 'none';
+                }, 400); // Wait for transition to finish
+            }
+
+            // Auto-hide the active message after 5 seconds
+            if (activeMessage) {
+                setTimeout(function() {
+                    fadeOut(activeMessage);
+                }, 5000); // 5 seconds
+            }
+
+            // Handle manual closing
+            const closeButtons = document.querySelectorAll('.flash-close');
+            closeButtons.forEach(function(button) {
+                button.addEventListener('click', function() {
+                    fadeOut(this.closest('.flash-message'));
+                });
             });
-        }
+
+            // Sidebar toggler for mobile
+            const sidebarToggler = document.getElementById('sidebarToggler');
+            const sidebar = document.getElementById('sidebar');
+            if (sidebarToggler && sidebar) {
+                sidebarToggler.addEventListener('click', function() {
+                    sidebar.classList.toggle('active');
+                });
+            }
+        });
     </script>
     @stack('scripts')
 </body>
