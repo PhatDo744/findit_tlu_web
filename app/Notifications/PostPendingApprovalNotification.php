@@ -27,7 +27,7 @@ class PostPendingApprovalNotification extends Notification implements ShouldQueu
     public function toDatabase($notifiable)
     {
         return [
-            'title' => 'Tin "' . $this->item->title . '" đã được bạn đăng chờ duyệt.',
+            'title' => 'Tin "' . $this->item->title . '" đã được bạn đang chờ duyệt.',
             'item_id' => $this->item->id,
             'type' => 'pending_approval',
         ];

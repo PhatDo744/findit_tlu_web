@@ -71,8 +71,22 @@ class NotificationController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Request $request, string $id)
     {
-        //
+        $notification = $request->user()->notifications()->find($id);
+        if (!$notification) {
+            return response()->json(['message' => 'Notification not found or not belongs to user'], 404);
+        }
+        $notification->delete();
+        return response()->json(['message' => 'Notification deleted successfully']);
+    }
+
+    /**
+     * Xóa tất cả thông báo của user
+     */
+    public function destroyAll(Request $request)
+    {
+        $request->user()->notifications()->delete();
+        return response()->json(['message' => 'All notifications deleted successfully']);
     }
 }
