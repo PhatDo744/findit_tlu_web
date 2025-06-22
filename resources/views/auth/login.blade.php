@@ -103,7 +103,7 @@
             </div>
         @endif
 
-        <form method="POST" action="{{ route('login') }}">
+        <form method="POST" action="{{ route('login') }}" id="loginForm">
             @csrf
             <div class="mb-3 text-start">
                 <label for="email" class="form-label">Email</label>
@@ -114,8 +114,8 @@
                 <input type="password" class="form-control" id="password" name="password" required placeholder="Nhập mật khẩu">
             </div>
             <div class="mb-3 form-check text-start">
-                <input type="checkbox" class="form-check-input" id="remember" name="remember">
-                <label class="form-check-label" for="remember">Ghi nhớ đăng nhập</label>
+                <input type="checkbox" class="form-check-input" id="rememberEmail" name="rememberEmail">
+                <label class="form-check-label" for="rememberEmail">Ghi nhớ email</label>
             </div>
             <button type="submit" class="btn btn-primary w-100">
             <i class="fas fa-sign-in-alt mr-2"></i>Đăng Nhập
@@ -125,5 +125,61 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Lấy các elements
+        const emailInput = document.getElementById('email');
+        const rememberEmailCheckbox = document.getElementById('rememberEmail');
+        const loginForm = document.getElementById('loginForm');
+
+        // Hàm lưu email vào localStorage
+        function saveEmail() {
+            const email = emailInput.value.trim();
+            const rememberEmail = rememberEmailCheckbox.checked;
+            
+            if (rememberEmail && email) {
+                localStorage.setItem('rememberedEmail', email);
+                localStorage.setItem('rememberEmailChecked', 'true');
+            } else {
+                localStorage.removeItem('rememberedEmail');
+                localStorage.removeItem('rememberEmailChecked');
+            }
+        }
+
+        // Hàm load email từ localStorage
+        function loadEmail() {
+            const savedEmail = localStorage.getItem('rememberedEmail');
+            const rememberEmailChecked = localStorage.getItem('rememberEmailChecked');
+            
+            if (savedEmail && rememberEmailChecked === 'true') {
+                emailInput.value = savedEmail;
+                rememberEmailCheckbox.checked = true;
+            }
+        }
+
+        // Load email khi trang được load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadEmail();
+        });
+
+        // Lưu email khi form được submit
+        loginForm.addEventListener('submit', function() {
+            saveEmail();
+        });
+
+        // Lưu email khi checkbox thay đổi
+        rememberEmailCheckbox.addEventListener('change', function() {
+            if (!this.checked) {
+                localStorage.removeItem('rememberedEmail');
+                localStorage.removeItem('rememberEmailChecked');
+            }
+        });
+
+        // Lưu email khi user nhập xong email
+        emailInput.addEventListener('blur', function() {
+            if (rememberEmailCheckbox.checked) {
+                saveEmail();
+            }
+        });
+    </script>
 </body>
 </html> 

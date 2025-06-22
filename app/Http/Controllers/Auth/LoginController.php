@@ -50,6 +50,10 @@ class LoginController extends Controller
                 ])->onlyInput('email');
             }
 
+            // Lưu email của user vào session để sử dụng khi logout
+            $request->session()->put('user_email', $user->email);
+            $request->session()->put('remember_email_checked', $request->filled('rememberEmail'));
+
             // Nếu là moderator thì chuyển hướng về trang quản lý bài đăng
             if ($user->role_id == 2) {
                 return redirect()->intended(route('admin.items.index'));

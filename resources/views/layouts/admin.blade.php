@@ -356,10 +356,8 @@
                                 <span style="font-weight:600;color:#333;">{{ Auth::user()->full_name ?? 'Admin' }}</span>
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
-
-
                                 <li>
-                                    <a class="dropdown-item" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                    <a class="dropdown-item" href="#" onclick="handleLogout(event)">
                                         Đăng xuất
                                     </a>
                                     <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
@@ -421,6 +419,28 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        // Function xử lý logout với ghi nhớ email
+        function handleLogout(event) {
+            event.preventDefault();
+            
+            // Lấy thông tin từ session (sẽ được truyền qua meta tag hoặc data attribute)
+            const userEmail = '{{ session("user_email", "") }}';
+            const rememberEmailChecked = '{{ session("remember_email_checked", false) }}';
+            
+            // Nếu checkbox "Ghi nhớ email" đã được check, lưu email vào localStorage
+            if (rememberEmailChecked === '1' && userEmail) {
+                localStorage.setItem('rememberedEmail', userEmail);
+                localStorage.setItem('rememberEmailChecked', 'true');
+            } else {
+                // Nếu không check, xóa email đã lưu
+                localStorage.removeItem('rememberedEmail');
+                localStorage.removeItem('rememberEmailChecked');
+            }
+            
+            // Submit form logout
+            document.getElementById('logout-form').submit();
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
             const flashMessages = document.querySelectorAll('.flash-message');
 
